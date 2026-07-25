@@ -1,0 +1,22 @@
+[project]
+name = "bookkit"
+version = "0.1.0"
+description = "Layout measurement, pagination, and production for the book-writing skill"
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.49",
+    "pypdf>=5.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["bookkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
