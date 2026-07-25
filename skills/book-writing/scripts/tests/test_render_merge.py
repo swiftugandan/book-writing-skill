@@ -1,0 +1,59 @@
+from pathlib import Path
+
+from bookkit.manifest import assign_folios
+from bookkit.merge import merge, pdf_geometry_pt
+from bookkit.render import render_all
+from tests.conftest import write_book
+
+
+def test_render_all_writes_one_pdf_per_source(book_dir: Path):
+    write_book(book_dir, "a.html", ["<p>a</p>"])
+    write_book(book_dir, "b.html", ["<p>b</p>", "<p>c</p>"])
+    manifest = assign_folios([("a.html", 1), ("b.html", 2)])
+
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    assert [p.name for p in pdfs] == ["a.pdf", "b.pdf"]
+    assert all(p.exists() and p.stat().st_size > 0 for p in pdfs)
+
+
+def test_rendered_pages_use_the_declared_geometry(book_dir: Path):
+    write_book(book_dir, "a.html", ["<p>a</p>", "<p>b</p>"])
+    manifest = assign_folios([("a.html", 2)])
+
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    for width, height in pdf_geometry_pt(pdfs[0]):
+        assert round(width) == 504
+        assert round(height) == 720
+
+
+def test_rendered_page_count_matches_the_manifest(book_dir: Path):
+    write_book(book_dir, "a.html", ["<p>a</p>", "<p>b</p>", "<p>c</p>"])
+    manifest = assign_folios([("a.html", 3)])
+
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    assert len(pdf_geometry_pt(pdfs[0])) == 3
+
+
+def test_merge_concatenates_in_argument_order(book_dir: Path):
+    write_book(book_dir, "a.html", ["<p>a</p>"])
+    write_book(book_dir, "b.html", ["<p>b</p>", "<p>c</p>"])
+    manifest = assign_folios([("a.html", 1), ("b.html", 2)])
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    total = merge(pdfs, book_dir / "book.pdf")
+
+    assert total == 3
+    assert len(pdf_geometry_pt(book_dir / "book.pdf")) == 3
+
+
+def test_merge_creates_missing_parent_directories(book_dir: Path):
+    write_book(book_dir, "a.html", ["<p>a</p>"])
+    manifest = assign_folios([("a.html", 1)])
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    merge(pdfs, book_dir / "dist" / "book.pdf")
+
+    assert (book_dir / "dist" / "book.pdf").exists()
