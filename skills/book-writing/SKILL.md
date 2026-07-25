@@ -29,7 +29,13 @@ stop and say so. **Do not invent source material.**
 
 ## ② Blueprint: write `STRUCTURE.md`
 
-Read `references/blueprint-format.md`. Copy `assets/STRUCTURE.template.md` and fill it in.
+Read `references/blueprint-format.md` **and Part One of
+`references/editorial-standards.md`**. Copy `assets/STRUCTURE.template.md` and fill it in.
+
+Most of the blueprint is printed: the promise reaches the preface and back cover, chapter
+titles repeat in every running head, driving questions become chapter decks. It is shipping
+prose, so it is written to the same constraints and audited the same way. Run
+`avoid-ai-writing` in detect mode over `STRUCTURE.md` before moving on.
 
 Every chapter declares one **driving question**, and every beat in that chapter must serve
 the answer. This is the constraint that keeps a chapter from becoming a topic dump.

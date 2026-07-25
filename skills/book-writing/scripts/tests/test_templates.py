@@ -110,3 +110,36 @@ def test_structure_template_requires_a_driving_question_per_chapter():
     md = (ASSETS / "STRUCTURE.template.md").read_text(encoding="utf-8")
 
     assert re.search(r"\*\*Question:\*\*", md)
+
+
+def _printed_prose(html: str) -> str:
+    """Template text that actually reaches a page.
+
+    `<title>` never renders and HTML comments are authoring notes, so neither
+    counts against the prose rules the templates are meant to model.
+    """
+    without_comments = re.sub(r"<!--.*?-->", " ", html, flags=re.DOTALL)
+    return re.sub(r"<title>.*?</title>", " ", without_comments, flags=re.DOTALL)
+
+
+@pytest.mark.parametrize("name", HTML_TEMPLATES)
+def test_template_prose_models_the_em_dash_rule(name: str):
+    """A template that uses em dashes teaches every book built from it to."""
+    prose = _printed_prose((ASSETS / name).read_text(encoding="utf-8"))
+
+    assert "\u2014" not in prose, (
+        f"{name} has an em dash in printed prose; the editorial standards "
+        "target at most one per thousand words"
+    )
+
+
+def test_structure_template_models_the_em_dash_rule():
+    md = (ASSETS / "STRUCTURE.template.md").read_text(encoding="utf-8")
+
+    assert "\u2014" not in md
+
+
+def test_structure_template_warns_against_padding_the_beat_list():
+    md = (ASSETS / "STRUCTURE.template.md").read_text(encoding="utf-8")
+
+    assert "pad" in md.lower()

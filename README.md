@@ -53,7 +53,7 @@ The skill runs six phases, reading only the reference it needs for the phase it 
 | Phase | What happens |
 |---|---|
 | ① Intake | Read `drafts/`. Extract the driving problem, the claims, the openers, the candidate running examples. Every claim gets labelled by evidential standing. |
-| ② Blueprint | Write `STRUCTURE.md`: promise, audience, reading paths, running examples, and per chapter a driving question, beat list, field guide, and example. |
+| ② Blueprint | Write `STRUCTURE.md`: promise, audience, reading paths, running examples, and per chapter a driving question, beat list, field guide, and example. Written to the editorial constraints, because most of it is printed. |
 | ③ Interior | Set the design tokens and prove them by taking one chapter all the way to PDF. |
 | ④ Chapter | Draft and typeset chapters one at a time against a 13-beat pattern, **writing to the editorial constraints rather than repairing afterwards**. |
 | ⑤ Editorial gate | Audit each chapter: `avoid-ai-writing` in detect mode, then the rigor checks a pattern detector cannot see. |
@@ -71,10 +71,17 @@ example mutates, the audience widens, the same idea arrives twice under differen
 
 ## Prose quality is constrained twice
 
-The editorial standards are loaded **before** a chapter is drafted, not after. They are
+The editorial standards are loaded **before** anything is written, not after. They are
 generation constraints first: vary sentence and paragraph length deliberately, keep em
 dashes under one per thousand words, skip the transitional throat-clearing, repeat the
 right word instead of cycling synonyms.
+
+That covers the blueprint as well as the chapters. Most of `STRUCTURE.md` is printed: the
+promise reaches the preface and the back cover, chapter titles repeat in every running
+head, driving questions become chapter decks. A weak chapter title is on the page hundreds
+of times, and it is far cheaper to fix a promise in the blueprint than after it has been
+set in three places. The shipped templates model the rules too, since a template that uses
+em dashes teaches every book built from it to use them.
 
 Then the chapter is audited, because nobody holds forty rules in mind across nine pages.
 The audit runs [`avoid-ai-writing`](https://github.com/conorbronsdon/avoid-ai-writing) in
@@ -173,7 +180,7 @@ rule cannot read custom properties:
 cd skills/book-writing/scripts && .venv/bin/pytest
 ```
 
-123 tests. CI additionally builds a real book from the shipped templates and runs the four
+131 tests. CI additionally builds a real book from the shipped templates and runs the four
 documented commands, then confirms `verify` rejects a deliberately clipped page. That
 end-to-end check exists because it caught a bug the unit suite could not: the fixtures
 construct valid layouts by hand, so a template linking the wrong stylesheet path passed

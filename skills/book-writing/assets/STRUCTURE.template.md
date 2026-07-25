@@ -30,7 +30,7 @@ before. Name the outcome, not the topic.}}
 ### Primary: {{Name}}
 
 {{The example that recurs in every chapter. Start it small and under-specified
-so it can grow across the book — an example that arrives fully formed has
+so it can grow across the book. An example that arrives fully formed has
 nowhere to go.}}
 
 ### Variant: {{Name}}
@@ -41,21 +41,26 @@ difference.}}
 
 ---
 
-# Part {{N}} — {{Part title}}
+# Part {{N}}: {{Part title}}
 
 ## Chapter {{N}}: {{Chapter title}}
 
-**Question:** {{The single question this chapter answers. Every beat below must
-serve this answer. If a beat does not, cut it or move it to another chapter.}}
+{{Titles describe, they do not label. "Understanding deployment" is a territory.
+A title tells the reader what they will be able to do. It repeats in every
+running head, so a weak one is on the page hundreds of times.}}
 
-- {{Beat}}
-- {{Beat}}
+**Question:** {{The single question this chapter answers. Every beat below must
+serve this answer. If a beat does not, cut it or move it to another chapter.
+Printed as the chapter deck.}}
+
+- {{Beat. As many as there are. Do not pad to a satisfying number: a beat added
+  to round the list out fails the question test by construction.}}
 - {{Beat}}
 - {{Beat}}
 
 **Field guide:** {{Reusable artifact the reader leaves with}}
 **Primary example:** {{Slice of the running example}}
-**Variant example:** {{Optional — omit if the chapter does not need one}}
+**Variant example:** {{Optional. Omit if the chapter does not need one}}
 
 ## Chapter {{N}}: {{Chapter title}}
 

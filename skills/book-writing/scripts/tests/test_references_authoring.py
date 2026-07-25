@@ -122,3 +122,18 @@ def test_editorial_standards_keeps_a_section_on_what_to_preserve():
     text = (REFS / "editorial-standards.md").read_text(encoding="utf-8")
 
     assert "## Keep" in text
+
+
+def test_blueprint_format_names_where_its_prose_gets_printed():
+    """A field the author thinks is scaffolding will end up on the back cover."""
+    text = (REFS / "blueprint-format.md").read_text(encoding="utf-8")
+
+    for slot in ["{{PROMISE}}", "{{DRIVING_QUESTION}}", "{{CHAPTER_TITLE}}"]:
+        assert slot in text, f"blueprint-format does not say where {slot} appears"
+
+
+def test_blueprint_format_directs_reading_the_editorial_standards():
+    text = (REFS / "blueprint-format.md").read_text(encoding="utf-8")
+
+    assert "references/editorial-standards.md" in text
+    assert "avoid-ai-writing" in text

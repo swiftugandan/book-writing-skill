@@ -58,6 +58,43 @@ Name each path for the reader who takes it, and say in one sentence what that
 path gives them. Paths are a promise that the book can be read in parts, so
 every chapter on a path must stand up without the chapters that path skips.
 
+## Writing the blueprint's prose
+
+The blueprint is not scaffolding that gets thrown away. Most of it is printed.
+
+| Blueprint field | Where it appears in the book |
+|---|---|
+| Promise | Preface, back cover, `{{PROMISE}}` |
+| Subtitle | Title page, front cover, `{{SUBTITLE}}` |
+| Reading paths | The "How to read this book" page, `{{PATH_NAME}}` and `{{PATH_DESCRIPTION}}` |
+| Chapter title | Chapter opener and every running head, `{{CHAPTER_TITLE}}` |
+| Driving question | The chapter deck, `{{DRIVING_QUESTION}}` |
+| Audience outcomes | Back cover, `{{OUTCOME_1}}` and siblings |
+
+So **read Part One of `references/editorial-standards.md` before writing the
+blueprint**, not only before drafting a chapter. Everything there applies. A chapter
+title with hype vocabulary in it repeats on every left-hand page for twelve pages.
+
+Four traps are specific to blueprint prose, because its fields are short and
+declarative in a way body prose is not:
+
+- **The promise is not marketing copy.** It states what the reader will be able to
+  do. "This comprehensive guide will transform how your team ships software" says
+  nothing and uses two flagged words doing it. Name the capability.
+- **The audience is a list of roles, not a false range.** "Whether you are a junior
+  developer or a CTO" means everyone, which means nobody. This is why the format
+  requires an explicit *not* the audience: it forces a real boundary.
+- **Chapter titles describe, they do not label.** "Understanding deployment" is a
+  territory. A title should tell a reader what they will be able to do, in the same
+  register the chapter itself uses.
+- **Beat lists are not padded to a count.** Four beats when there are four. Two when
+  there are two. A chapter padded to a satisfying number has beats that fail the
+  driving-question test by construction.
+
+Audit the blueprint once it is written, the same way a chapter is audited: run
+`avoid-ai-writing` in detect mode over `STRUCTURE.md`. It is far cheaper to fix a
+promise now than after it has been set in a preface, a back cover, and a chapter deck.
+
 ## The page budget
 
 The budget is not decorative. `bookkit.verify` compares measured page counts

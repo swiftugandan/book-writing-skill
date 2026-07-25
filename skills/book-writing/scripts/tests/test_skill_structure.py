@@ -122,3 +122,13 @@ def test_gate_comes_after_drafting_in_the_router():
     text = SKILL_MD.read_text(encoding="utf-8")
 
     assert text.index("## \u2463 Chapter") < text.index("## \u2464 Editorial gate")
+
+
+def test_blueprint_phase_loads_the_editorial_standards():
+    """The blueprint is shipping prose, so it gets the same constraints."""
+    text = SKILL_MD.read_text(encoding="utf-8")
+
+    blueprint = _phase_section(text, "## \u2461 Blueprint")
+
+    assert "references/editorial-standards.md" in blueprint
+    assert "avoid-ai-writing" in blueprint
