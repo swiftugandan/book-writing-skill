@@ -142,7 +142,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     manifest = Manifest.from_json(
         (args.book_dir / MANIFEST_NAME).read_text(encoding="utf-8")
     )
-    css_path = args.css or args.book_dir / "assets" / "interior.css"
+    css_path = args.css or args.book_dir / "interior.css"
 
     findings = verify(args.book_dir, manifest, css_path, (args.width_pt, args.height_pt))
     for finding in findings:

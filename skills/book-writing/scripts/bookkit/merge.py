@@ -22,16 +22,32 @@ def pdf_geometry_pt(pdf: Path) -> list[tuple[float, float]]:
     ]
 
 
-def merge(pdfs: Sequence[Path], out: Path) -> int:
-    """Concatenate `pdfs` in order into `out`, returning the total page count."""
+def merge(pdfs: Sequence[Path], out: Path, expected_pages: int | None = None) -> int:
+    """Concatenate `pdfs` in order into `out`, returning the total page count.
+
+    When `expected_pages` is given, a disagreement raises rather than writing a
+    book that does not match the one the manifest describes. The usual cause is
+    a page file whose stylesheet failed to load, so Chromium never applied the
+    fixed `.page` height and printed a different number of physical pages than
+    there are `.page` elements.
+    """
     out.parent.mkdir(parents=True, exist_ok=True)
     writer = PdfWriter()
     for pdf in pdfs:
         for page in PdfReader(str(pdf)).pages:
             writer.add_page(page)
+
+    total = len(writer.pages)
+    if expected_pages is not None and total != expected_pages:
+        raise ValueError(
+            f"rendered {total} pages but the manifest says {expected_pages}. "
+            "The sources and the PDFs disagree. Check that every page file "
+            "resolves its stylesheet, then re-run bookkit.paginate"
+        )
+
     with out.open("wb") as handle:
         writer.write(handle)
-    return len(writer.pages)
+    return total
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -48,7 +64,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     pdfs = [pdf_dir / f"{Path(e.file).stem}.pdf" for e in manifest.entries]
     out = args.out or args.book_dir / "book.pdf"
 
-    total = merge(pdfs, out)
+    try:
+        total = merge(pdfs, out, expected_pages=manifest.total_pages())
+    except ValueError as error:
+        print(f"FAILED: {error}")
+        return 1
     print(f"merged {len(pdfs)} files into {out} ({total} pages)")
     return 0
 

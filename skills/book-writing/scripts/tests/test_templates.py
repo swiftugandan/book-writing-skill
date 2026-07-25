@@ -21,7 +21,8 @@ def _localised(name: str, tmp_path: Path) -> Path:
     source = (ASSETS / name).read_text(encoding="utf-8")
     probe = tmp_path / name
     probe.write_text(
-        source.replace("../assets/interior.css", CSS_PATH.as_uri()), encoding="utf-8"
+        source.replace('href="interior.css"', f'href="{CSS_PATH.as_uri()}"'),
+        encoding="utf-8",
     )
     return probe
 
@@ -35,7 +36,9 @@ def test_template_exists(name: str):
 def test_template_links_the_core_stylesheet(name: str):
     html = (ASSETS / name).read_text(encoding="utf-8")
 
-    assert 'href="../assets/interior.css"' in html
+    assert 'href="interior.css"' in html, (
+        "page files link the stylesheet sitting beside them in the book directory"
+    )
 
 
 @pytest.mark.parametrize("name", HTML_TEMPLATES)

@@ -49,11 +49,14 @@ The skill runs six phases:
 ## Production pipeline
 
 ```bash
-cd skills/book-writing/scripts
-.venv/bin/python -m bookkit.paginate ../../../book
-.venv/bin/python -m bookkit.render   ../../../book
-.venv/bin/python -m bookkit.merge    ../../../book
-.venv/bin/python -m bookkit.verify   ../../../book --css ../assets/interior.css
+SKILL=~/.claude/skills/book-writing   # or ./skills/book-writing in this repo
+BOOK=/path/to/your/book
+
+cd "$SKILL/scripts"
+.venv/bin/python -m bookkit.paginate "$BOOK"
+.venv/bin/python -m bookkit.render   "$BOOK"
+.venv/bin/python -m bookkit.merge    "$BOOK"
+.venv/bin/python -m bookkit.verify   "$BOOK" --css "$SKILL/assets/interior.css"
 ```
 
 `verify` exits non-zero on clipped pages, wrong trim geometry, CSS layering

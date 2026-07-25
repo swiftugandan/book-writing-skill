@@ -1,7 +1,16 @@
 # The interior design system
 
-`assets/interior.css` is the book's interior. Copy it into the project, set the
-tokens, and link it from every page file.
+`assets/interior.css` is the book's interior. Copy it into the **book directory**,
+beside the page files, set the tokens, and link it from every page file as
+`<link rel="stylesheet" href="interior.css">`.
+
+Keeping the stylesheet beside the page files is what makes a page file
+self-resolving: open one in a browser, or hand it to `bookkit.render`, and it
+finds its stylesheet with no build step and no path assumptions. A page file
+that cannot resolve its stylesheet still renders, silently, without the fixed
+`.page` height, so Chromium prints a different number of physical pages than
+there are `.page` elements. `bookkit.merge` refuses to assemble a book when that
+count disagrees with the manifest.
 
 ## Tokens
 

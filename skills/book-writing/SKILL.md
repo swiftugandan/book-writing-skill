@@ -38,9 +38,19 @@ the answer. This is the constraint that keeps a chapter from becoming a topic du
 
 ## ③ Interior: establish the design system
 
-Read `references/interior-design.md`. Copy `assets/interior.css` into the project and set
-the tokens (`--page-w`, `--page-h`, `--margin`, `--ink`, `--paper`, `--accent`, `--serif`,
-`--sans`, `--mono`).
+Read `references/interior-design.md`. Copy `assets/interior.css` **into the book directory,
+beside the page files**, and set the tokens (`--page-w`, `--page-h`, `--margin`, `--ink`,
+`--paper`, `--accent`, `--serif`, `--sans`, `--mono`).
+
+The book directory holds everything the browser needs to resolve a page:
+
+```
+book/
+  interior.css          the core layer, linked by every page file
+  book.order            assembly order, one filename per line
+  front-matter.html
+  chapter-01.html
+```
 
 Then lay out **one** chapter and take it all the way through phase ⑥. Prove the design on a
 single chapter before laying out the rest.
@@ -62,13 +72,19 @@ chapter. A chapter is not done until it has passed this gate.
 
 Read `references/production.md`.
 
+Set `SKILL` to this skill's own directory (the one holding this file) and `BOOK` to the
+book directory, then:
+
 ```bash
-cd skills/book-writing/scripts
-.venv/bin/python -m bookkit.paginate ../../../book
-.venv/bin/python -m bookkit.render   ../../../book
-.venv/bin/python -m bookkit.merge    ../../../book
-.venv/bin/python -m bookkit.verify   ../../../book --css ../assets/interior.css
+cd "$SKILL/scripts"
+.venv/bin/python -m bookkit.paginate "$BOOK"
+.venv/bin/python -m bookkit.render   "$BOOK"
+.venv/bin/python -m bookkit.merge    "$BOOK"
+.venv/bin/python -m bookkit.verify   "$BOOK" --css "$SKILL/assets/interior.css"
 ```
+
+First run only: `python3 -m venv .venv && .venv/bin/pip install -e '.[dev]' &&
+.venv/bin/playwright install chromium`.
 
 `verify` fails on clipped pages, wrong geometry, CSS layering violations, a stale manifest,
 and folio discontinuity. Every one of those failures is otherwise silent. Never hand-edit a

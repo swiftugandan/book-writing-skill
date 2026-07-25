@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from bookkit.manifest import assign_folios
 from bookkit.merge import merge, pdf_geometry_pt
 from bookkit.render import render_all
@@ -70,3 +72,21 @@ def test_render_geometry_follows_the_caller_not_the_at_page_rule(book_dir: Path)
 
     width, height = pdf_geometry_pt(pdfs[0])[0]
     assert (round(width), round(height)) == (432, 648)
+
+
+def test_merge_accepts_a_matching_expected_page_count(book_dir: Path):
+    write_book(book_dir, "a.html", ["<p>a</p>", "<p>b</p>"])
+    manifest = assign_folios([("a.html", 2)])
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    assert merge(pdfs, book_dir / "book.pdf", expected_pages=2) == 2
+
+
+def test_merge_rejects_a_page_count_that_disagrees_with_the_manifest(book_dir: Path):
+    """A render/measure disagreement must not ship as a finished PDF."""
+    write_book(book_dir, "a.html", ["<p>a</p>", "<p>b</p>"])
+    manifest = assign_folios([("a.html", 2)])
+    pdfs = render_all(book_dir, manifest, book_dir / "out")
+
+    with pytest.raises(ValueError, match="manifest says 5"):
+        merge(pdfs, book_dir / "book.pdf", expected_pages=5)

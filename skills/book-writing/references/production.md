@@ -2,32 +2,42 @@
 
 Four commands, always in this order.
 
+Every command below is written against two variables, so the same lines work
+whether the skill sits in a repository checkout or in `~/.claude/skills/`:
+
+```bash
+SKILL=/path/to/book-writing     # the directory holding SKILL.md
+BOOK=/path/to/your/book         # the directory holding the page files
+```
+
 ## First-time setup
 
 ```bash
-cd skills/book-writing/scripts
+cd "$SKILL/scripts"
 python3 -m venv .venv
 .venv/bin/pip install -e '.[dev]'
 .venv/bin/playwright install chromium
 ```
 
+Python 3.11 or newer. Playwright brings its own Chromium, so no system browser
+is required.
+
 ## The pipeline
 
 ```bash
-cd skills/book-writing/scripts
-.venv/bin/python -m bookkit.paginate ../../../book
-.venv/bin/python -m bookkit.render   ../../../book
-.venv/bin/python -m bookkit.merge    ../../../book
-.venv/bin/python -m bookkit.verify   ../../../book --css ../assets/interior.css
+cd "$SKILL/scripts"
+.venv/bin/python -m bookkit.paginate "$BOOK"
+.venv/bin/python -m bookkit.render   "$BOOK"
+.venv/bin/python -m bookkit.merge    "$BOOK"
+.venv/bin/python -m bookkit.verify   "$BOOK" --css "$SKILL/assets/interior.css"
 ```
 
-Adjust the relative path to wherever the book directory lives. For a retargeted
-trim, pass the geometry to both ends:
+For a retargeted trim, pass the geometry to both ends:
 
 ```bash
-.venv/bin/python -m bookkit.render ../../../book --page-w 6in --page-h 9in
-.venv/bin/python -m bookkit.verify ../../../book --width-pt 432 --height-pt 648 \
-    --css ../assets/interior.css
+.venv/bin/python -m bookkit.render "$BOOK" --page-w 6in --page-h 9in
+.venv/bin/python -m bookkit.verify "$BOOK" --width-pt 432 --height-pt 648 \
+    --css "$SKILL/assets/interior.css"
 ```
 
 **Re-run all four after any content edit.** Editing one chapter changes its page
@@ -42,6 +52,22 @@ first page should display folio `F` needs `counter-reset: page (F - 1)`.
 counter offset by hand.** Hand-assigned offsets are the failure this tool
 exists to prevent: they encode a guess about how long each chapter will be, and
 a chapter that runs one page over silently renumbers everything after it.
+
+## Book directory layout
+
+```
+book/
+  interior.css          the core layer, linked by every page file
+  book.order            assembly order
+  front-matter.html
+  chapter-01.html
+  pdf/                  written by bookkit.render
+  book.manifest.json    written by bookkit.paginate
+  book.pdf              written by bookkit.merge
+```
+
+`--css` defaults to `$BOOK/interior.css`, so the flag is only needed when the
+stylesheet lives elsewhere.
 
 ## `book.order`
 
@@ -82,6 +108,10 @@ check, which is why none of them is advisory:
 | CSS layering violation | A chapter-local selector unprefixed, or shadowing core |
 | Folio discontinuity | Page numbers that do not run continuously |
 | Stale manifest | A chapter edited without re-running `paginate` |
+
+`bookkit.merge` adds one more, at assembly time: it refuses to write the book
+when the rendered page count disagrees with the manifest. The usual cause is a
+page file that could not resolve its stylesheet.
 
 It warns, without failing, on **page budget** drift against `STRUCTURE.md`. A
 chapter running long is usually a chapter answering two questions, which is a
