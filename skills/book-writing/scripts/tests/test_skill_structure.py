@@ -80,3 +80,45 @@ def test_router_refuses_to_invent_source_material():
     text = SKILL_MD.read_text(encoding="utf-8").lower()
 
     assert "do not invent" in text or "never invent" in text
+
+
+def _phase_section(text: str, marker: str) -> str:
+    """The body of one numbered phase section in SKILL.md."""
+    start = text.index(marker)
+    rest = text[start + len(marker):]
+    end = rest.find("\n## ")
+    return rest if end == -1 else rest[:end]
+
+
+def test_drafting_phase_loads_the_editorial_standards():
+    """Constraints must reach the writer before the prose exists, not after."""
+    text = SKILL_MD.read_text(encoding="utf-8")
+
+    drafting = _phase_section(text, "## \u2463 Chapter")
+
+    assert "references/editorial-standards.md" in drafting
+    assert "references/chapter-pattern.md" in drafting
+
+
+def test_drafting_phase_says_to_read_the_standards_before_writing():
+    text = SKILL_MD.read_text(encoding="utf-8").lower()
+
+    drafting = _phase_section(text, "## \u2463 chapter")
+
+    assert "before writing" in drafting
+
+
+def test_editorial_gate_still_runs_after_drafting():
+    """Prevention does not replace the audit."""
+    text = SKILL_MD.read_text(encoding="utf-8")
+
+    gate = _phase_section(text, "## \u2464 Editorial gate")
+
+    assert "avoid-ai-writing" in gate
+    assert "detect mode" in gate.lower()
+
+
+def test_gate_comes_after_drafting_in_the_router():
+    text = SKILL_MD.read_text(encoding="utf-8")
+
+    assert text.index("## \u2463 Chapter") < text.index("## \u2464 Editorial gate")

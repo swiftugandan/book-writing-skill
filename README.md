@@ -55,8 +55,8 @@ The skill runs six phases, reading only the reference it needs for the phase it 
 | ① Intake | Read `drafts/`. Extract the driving problem, the claims, the openers, the candidate running examples. Every claim gets labelled by evidential standing. |
 | ② Blueprint | Write `STRUCTURE.md`: promise, audience, reading paths, running examples, and per chapter a driving question, beat list, field guide, and example. |
 | ③ Interior | Set the design tokens and prove them by taking one chapter all the way to PDF. |
-| ④ Chapter | Draft and typeset chapters one at a time against a 13-beat pattern. |
-| ⑤ Editorial gate | Run each chapter through the `avoid-ai-writing` skill. |
+| ④ Chapter | Draft and typeset chapters one at a time against a 13-beat pattern, **writing to the editorial constraints rather than repairing afterwards**. |
+| ⑤ Editorial gate | Audit each chapter: `avoid-ai-writing` in detect mode, then the rigor checks a pattern detector cannot see. |
 | ⑥ Production | Paginate, render, merge, verify. |
 
 Two ideas do most of the work.
@@ -68,6 +68,26 @@ that fails it gets cut or moved to the chapter whose question it actually serves
 **`STRUCTURE.md` is the contract between writing sessions.** A book is written over
 weeks. Without a written architecture, chapter 9 drifts from chapter 2: the running
 example mutates, the audience widens, the same idea arrives twice under different names.
+
+## Prose quality is constrained twice
+
+The editorial standards are loaded **before** a chapter is drafted, not after. They are
+generation constraints first: vary sentence and paragraph length deliberately, keep em
+dashes under one per thousand words, skip the transitional throat-clearing, repeat the
+right word instead of cycling synonyms.
+
+Then the chapter is audited, because nobody holds forty rules in mind across nine pages.
+The audit runs [`avoid-ai-writing`](https://github.com/conorbronsdon/avoid-ai-writing) in
+**detect mode first** and fixes only what it flags.
+
+Order matters more than it looks. Rewriting to remove AI patterns is more expensive than
+not emitting them, and a heavy rewrite pass sands away the irregularity that makes prose
+read as human. That failure mode is real enough that the `avoid-ai-writing` skill warns
+about it directly. A chapter written to the constraints needs a light audit; a chapter
+written blind needs surgery, and the surgery costs it its voice.
+
+It is the same shape as the production pipeline. The templates are built to the right
+geometry **and** `verify` checks the geometry. Constrain, then verify.
 
 ## Book directory
 
@@ -153,7 +173,7 @@ rule cannot read custom properties:
 cd skills/book-writing/scripts && .venv/bin/pytest
 ```
 
-114 tests. CI additionally builds a real book from the shipped templates and runs the four
+123 tests. CI additionally builds a real book from the shipped templates and runs the four
 documented commands, then confirms `verify` rejects a deliberately clipped page. That
 end-to-end check exists because it caught a bug the unit suite could not: the fixtures
 construct valid layouts by hand, so a template linking the wrong stylesheet path passed

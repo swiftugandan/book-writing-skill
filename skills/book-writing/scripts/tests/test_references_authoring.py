@@ -83,3 +83,42 @@ def test_editorial_standards_does_not_prescribe_subject_matter():
 
     for leaked in ["volunteer operations", "simon martinelli", "self-contained system"]:
         assert leaked not in text, f"source-book content leaked: {leaked}"
+
+
+def test_editorial_standards_separates_write_time_from_audit_time():
+    text = (REFS / "editorial-standards.md").read_text(encoding="utf-8")
+
+    assert "# Part one: write to these" in text
+    assert "# Part two: audit what you wrote" in text
+    assert text.index("Part one") < text.index("Part two")
+
+
+def test_editorial_standards_lead_directs_reading_before_drafting():
+    text = (REFS / "editorial-standards.md").read_text(encoding="utf-8")
+
+    opening = text[: text.index("# Part one")]
+    assert "before drafting" in opening.lower()
+
+
+def test_write_time_half_carries_the_rhythm_constraints():
+    """Structural uniformity is the strongest tell and the hardest to repair."""
+    text = (REFS / "editorial-standards.md").read_text(encoding="utf-8")
+    part_one = text[text.index("# Part one") : text.index("# Part two")]
+
+    for constraint in ["sentence length", "paragraph length", "em dash"]:
+        assert constraint in part_one.lower(), f"missing write-time rule: {constraint}"
+
+
+def test_audit_half_prefers_detect_mode_over_blanket_rewriting():
+    text = (REFS / "editorial-standards.md").read_text(encoding="utf-8")
+    part_two = text[text.index("# Part two") :]
+
+    assert "detect mode" in part_two.lower()
+    assert "did not flag" in part_two.lower()
+
+
+def test_editorial_standards_keeps_a_section_on_what_to_preserve():
+    """A chapter that clears every pattern and reads sterile has failed differently."""
+    text = (REFS / "editorial-standards.md").read_text(encoding="utf-8")
+
+    assert "## Keep" in text

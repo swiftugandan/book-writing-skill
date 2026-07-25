@@ -57,16 +57,30 @@ single chapter before laying out the rest.
 
 ## ④ Chapter: draft and typeset
 
-Read `references/chapter-pattern.md`. One chapter at a time, from `STRUCTURE.md` into a copy
-of `assets/chapter.template.html`.
+Read **both** `references/chapter-pattern.md` and `references/editorial-standards.md`
+**before writing a word**. Part One of the editorial standards is a set of generation
+constraints, not a checklist for afterwards. Writing to them costs nothing; repairing prose
+that ignored them costs a rewrite, and a heavy rewrite flattens the voice the drafts gave
+the book.
+
+Then one chapter at a time, from `STRUCTURE.md` into a copy of
+`assets/chapter.template.html`.
 
 Pages are laid out by hand as `.page` divs. A chapter may add its own diagram CSS in an
 inline `<style>`, prefixed `ch-`, never shadowing a core selector.
 
 ## ⑤ Editorial gate
 
-Read `references/editorial-standards.md`, then invoke the **`avoid-ai-writing`** skill on the
-chapter. A chapter is not done until it has passed this gate.
+Part Two of `references/editorial-standards.md`. Three steps, per chapter:
+
+1. Invoke the **`avoid-ai-writing`** skill in **detect mode** first. A chapter drafted to
+   Part One should come back nearly clean. Fix only what it flags; rewriting unflagged
+   prose strips the irregularity that makes it read as human.
+2. Check the things a pattern detector cannot see: terms defined on first use, claims still
+   carrying their evidential standing, every beat still serving the driving question.
+3. Count em dashes against the one-per-thousand-words target.
+
+A chapter is not done until it has passed all three.
 
 ## ⑥ Production
 
