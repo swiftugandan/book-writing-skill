@@ -7,7 +7,7 @@ stance, or a style of humour.
 ## Voice
 
 - Active voice. Direct second person. Natural contractions.
-- A calm conversational tone — the register of an experienced colleague
+- A calm conversational tone: the register of an experienced colleague
   explaining something, not a keynote and not a manual.
 - Short sentences. Short paragraphs. Precise verbs.
 - Descriptive headings. A heading should tell the reader what they are about to
@@ -26,7 +26,7 @@ stance, or a style of humour.
 - No hype, no slogans, no consulting jargon, no executive-report register.
 - No inflated claims. If the evidence supports "in the cases reported," do not
   write "always."
-- No repetitive summary language — a paragraph that restates the previous
+- No repetitive summary language. A paragraph that restates the previous
   paragraph in different words is filler and should be cut.
 
 ## The evidence classification
@@ -46,18 +46,18 @@ lose.
 ## Callouts
 
 Four kinds, used sparingly: **Tip**, **Note**, **Warning**, **Rule of thumb**. A
-callout earns its place by holding something that genuinely interrupts the flow.
+callout earns its place by holding something that interrupts the flow.
 A page with three callouts has no callouts.
 
 ## The AI-slop gate
 
 This file does not reimplement AI-writing detection. That work belongs to the
-**`avoid-ai-writing`** skill — installed at `~/.claude/skills/avoid-ai-writing`,
-upstream at <https://github.com/conorbronsdon/avoid-ai-writing>.
+**`avoid-ai-writing`** skill, installed at `~/.claude/skills/avoid-ai-writing`
+and upstream at <https://github.com/conorbronsdon/avoid-ai-writing>.
 
 Invoke it on every chapter before marking that chapter done. It catches the
-mechanical tells — the rule-of-three padding, the "it's not just X, it's Y"
-construction, the hollow transitional throat-clearing, the em-dash tic — that
-survive a rigor pass because none of them is factually wrong.
+mechanical tells that survive a rigor pass because none of them is factually
+wrong: the rule-of-three padding, the "it's not just X, it's Y" construction,
+the hollow transitional throat-clearing, the em-dash tic.
 
 A chapter is not complete until it has been through that gate.

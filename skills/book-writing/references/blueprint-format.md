@@ -30,12 +30,11 @@ the answer.** This is the format's central constraint.
 
 A chapter without a driving question becomes a topic dump: it accumulates
 everything related to its subject, in no particular order, ending when the
-author runs out of material. A chapter with one has a test for every paragraph —
+author runs out of material. A chapter with one has a test for every paragraph:
 does this move the reader toward the answer? A beat that fails the test is cut
 or moved to the chapter whose question it actually serves.
 
-Write the question as something a reader would genuinely ask, not as a heading
-in disguise. "Why doesn't faster coding produce faster delivery?" is a question.
+Write the question the way a reader would ask it, not as a heading in disguise. "Why doesn't faster coding produce faster delivery?" is a question.
 "Understanding delivery bottlenecks" is a topic.
 
 If you cannot state a chapter's question in one sentence, the chapter is doing
@@ -43,7 +42,7 @@ more than one job. Split it.
 
 ## Choosing the running examples
 
-Pick **one** primary example and start it small and under-specified — a vague
+Pick **one** primary example and start it small and under-specified: a vague
 request, an ambiguous rule, a system nobody fully understands. An example that
 arrives fully formed has nowhere to go, and you will need it to grow across
 every chapter.
@@ -56,14 +55,14 @@ one example and a distraction.
 ## Reading paths
 
 Name each path for the reader who takes it, and say in one sentence what that
-path gives them. Paths are a promise that the book can be read in parts — so
+path gives them. Paths are a promise that the book can be read in parts, so
 every chapter on a path must stand up without the chapters that path skips.
 
 ## The page budget
 
 The budget is not decorative. `bookkit.verify` compares measured page counts
 against it and warns on drift, so a chapter that runs long surfaces as a
-structural problem — usually a chapter answering two questions — rather than
+structural problem (usually a chapter answering two questions) rather than
 being absorbed silently into a longer book.
 
 Set budgets per part, and let individual chapters vary within them.

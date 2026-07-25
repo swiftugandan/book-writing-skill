@@ -12,7 +12,7 @@ Retargeting the book is a token edit, not a stylesheet rewrite.
 | `--page-w` | `7in` | Trim width. Drives `.page` geometry. |
 | `--page-h` | `10in` | Trim height. |
 | `--margin` | `0.65in` | Text block inset on all four sides. |
-| `--ink` | `#242424` | Body text. Near-black, not black — pure black on white is harsh at body size. |
+| `--ink` | `#242424` | Body text. Near-black rather than black; pure black on white is harsh at body size. |
 | `--paper` | `#ffffff` | Page background. |
 | `--accent` | `#d54b20` | The single spot colour: eyebrows, dropcaps, rules, principle bars. |
 | `--serif` | Charter stack | Body text. |
@@ -25,15 +25,16 @@ every additional colour costs more than it returns.
 
 **Changing `--page-w` or `--page-h` also requires passing the new geometry to
 `bookkit.render` and `bookkit.verify`.** The `@page` rule cannot read custom
-properties, so it is not the source of truth — the CLI flags are.
+properties, so it is not the source of truth. The CLI flags are.
 
 ## The two CSS layers
 
-**Core layer** — `assets/interior.css`, linked by every page file. It holds the
-page frame, the typographic scale, and the component vocabulary.
+The **core layer** lives in `assets/interior.css` and is linked by every page
+file. It holds the page frame, the typographic scale, and the component
+vocabulary.
 
-**Chapter-local layer** — an inline `<style>` block in a single page file, for a
-diagram that only that chapter needs: a map, a board, a calendar, a timeline.
+The **chapter-local layer** is an inline `<style>` block in a single page file,
+for a diagram that only that chapter needs: a map, a board, a calendar, a timeline.
 
 Two rules, both enforced by `bookkit.verify`:
 
@@ -47,7 +48,7 @@ real.
 
 The distinction is not theoretical. In the source this system was distilled from,
 roughly 25 selectors appeared in nearly every file while 128 appeared in only one
-or two — a genuine core surrounded by per-chapter invention, with no boundary
+or two: a genuine core surrounded by per-chapter invention, with no boundary
 between them and the whole stylesheet duplicated into all 33 files.
 
 ## Component vocabulary
@@ -74,7 +75,7 @@ between them and the whole stylesheet duplicated into all 33 files.
 
 ## Hand-pagination
 
-Pages are laid out by hand as `.page` divs — you decide what falls on each page,
+Pages are laid out by hand as `.page` divs. You decide what falls on each page,
 not the browser. This is what makes the interior controllable.
 
 It has one sharp edge: `overflow: hidden` keeps the trim clean, so content that

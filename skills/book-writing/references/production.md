@@ -55,14 +55,14 @@ chapter-02.html
 appendix-a.html
 ```
 
-Without it, files are taken in sorted-name order — fine for `chapter-NN.html`,
-wrong as soon as front matter and appendices exist.
+Without it, files are taken in sorted-name order. That works for `chapter-NN.html`
+and breaks as soon as front matter and appendices exist.
 
 ## One rendering engine
 
 Measurement and printing both run through the **same** Playwright Chromium. This
 is not incidental. If layout were measured by one engine and printed by another,
-the two could disagree — and verification would certify a page as fitting that
+the two could disagree, and verification would certify a page as fitting that
 the PDF then clips. `render.py` reuses `measure.py`'s `browser_page()` for this
 reason.
 
@@ -83,6 +83,6 @@ check, which is why none of them is advisory:
 | Folio discontinuity | Page numbers that do not run continuously |
 | Stale manifest | A chapter edited without re-running `paginate` |
 
-It warns, without failing, on **page budget** drift against `STRUCTURE.md` — a
+It warns, without failing, on **page budget** drift against `STRUCTURE.md`. A
 chapter running long is usually a chapter answering two questions, which is a
 structural problem to fix in the blueprint rather than a build error.

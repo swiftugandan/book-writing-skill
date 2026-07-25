@@ -5,7 +5,7 @@ two chapters and stop having to work out where they are; you stop having to
 reinvent chapter structure fourteen times.
 
 Beats marked **required** appear in every chapter. Beats marked **where it fits**
-are omitted when the chapter does not need them — omit them cleanly rather than
+are omitted when the chapter does not need them. Omit them cleanly rather than
 padding.
 
 `assets/chapter.template.html` carries these beats as comment markers.
@@ -19,7 +19,7 @@ reader nothing to attach the definition to.
 
 **2. Chapter promise and reading time** *(required)*
 What the reader will be able to do, and how long it takes. *Omit it and* readers
-cannot decide whether to read now, skim, or skip — which breaks the reading
+cannot decide whether to read now, skim, or skip, which breaks the reading
 paths the blueprint promised.
 
 **3. Problem and consequences** *(required)*
@@ -77,9 +77,9 @@ Pages are laid out by hand. Three rules:
 - **Never split a worked example** across a page break. The reader needs the
   setup and the result in view together.
 - **Move a beat, do not tighten leading.** When a page is one line over, the fix
-  is to move a whole element to the next page — never to compress the type. The
+  is to move a whole element to the next page, never to compress the type. The
   interior's rhythm is the design; local exceptions to it read as errors.
 
 `.page { overflow: hidden }` keeps the trim clean, which means overset content
 disappears silently rather than raising an error. `bookkit.verify` measures every
-page for exactly this reason — run it before believing a chapter is done.
+page for exactly this reason. Run it before believing a chapter is done.
