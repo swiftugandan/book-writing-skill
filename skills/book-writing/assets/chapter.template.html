@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{BOOK_TITLE}} — Chapter {{N}}</title>
+  <link rel="stylesheet" href="../assets/interior.css">
+  <style>
+    /* Chapter-local components only. Prefix every class `ch-`.
+       Never redefine a core selector — bookkit.verify rejects both.
+       bookkit.paginate rewrites the counter offset below; do not edit it. */
+    body { counter-reset: page 0; }
+  </style>
+</head>
+<body>
+
+<!-- BEAT 1-2: OPENING SITUATION + CHAPTER PROMISE -->
+<div class="page">
+  <div class="opener-number">{{N}}</div>
+  <div class="eyebrow">{{PART_NAME}}</div>
+  <h1>{{CHAPTER_TITLE}}</h1>
+  <hr class="accent-rule">
+  <p class="deck">{{DRIVING_QUESTION}}</p>
+  <p class="dropcap">{{OPENING_SITUATION}}</p>
+  <div class="callout">
+    <span class="label">CHAPTER PROMISE</span>
+    <p>{{PROMISE}}</p>
+    <p class="micro">Reading time: {{MINUTES}} minutes</p>
+  </div>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 3: PROBLEM AND CONSEQUENCES -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>{{PROBLEM_HEADING}}</h2>
+  <p>{{PROBLEM_BODY}}</p>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 4: CORE CONCEPT IN PLAIN LANGUAGE -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>{{CONCEPT_HEADING}}</h2>
+  <p>{{CONCEPT_BODY}}</p>
+  <div class="principle">{{PRINCIPLE}}</div>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 5: STEP-BY-STEP METHOD -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>{{METHOD_HEADING}}</h2>
+  <ol class="steps">
+    <li>{{STEP_1}}</li>
+    <li>{{STEP_2}}</li>
+    <li>{{STEP_3}}</li>
+  </ol>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 6: PRIMARY WORKED EXAMPLE -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>{{EXAMPLE_HEADING}}</h2>
+  <p>{{EXAMPLE_BODY}}</p>
+  <div class="spec">
+    <h3>{{ARTIFACT_NAME}}</h3>
+    <p>{{ARTIFACT_BODY}}</p>
+  </div>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 7 (where it fits): VARIANT EXAMPLE — delete this page if unused -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>{{VARIANT_HEADING}}</h2>
+  <p>{{VARIANT_BODY}}</p>
+  <div class="artifact">
+    <h4>{{VARIANT_ARTIFACT_LABEL}}</h4>
+    <p>{{VARIANT_ARTIFACT_BODY}}</p>
+  </div>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 8: FAILURE MODES AND LIMITATIONS -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>{{FAILURE_HEADING}}</h2>
+  <div class="callout caution">
+    <span class="label caution">WARNING</span>
+    <p>{{FAILURE_BODY}}</p>
+  </div>
+  <div class="comparison-row">
+    <div class="small"><strong>{{FAILURE_MODE}}</strong></div>
+    <div class="small">{{FAILURE_CONSEQUENCE}}</div>
+  </div>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEAT 9: REUSABLE FIELD GUIDE -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>Field guide: {{FIELD_GUIDE_NAME}}</h2>
+  <ul class="checklist">
+    <li>{{CHECK_1}}</li>
+    <li>{{CHECK_2}}</li>
+    <li>{{CHECK_3}}</li>
+  </ul>
+  <p class="caption">{{FIELD_GUIDE_CAPTION}}</p>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- BEATS 10-13: WHAT TO REMEMBER, TEAM QUESTIONS, ONE ACTION, TRANSITION -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>{{CHAPTER_TITLE}}</span></div>
+  <h2>What to remember</h2>
+  <ul>
+    <li>{{REMEMBER_1}}</li>
+    <li>{{REMEMBER_2}}</li>
+  </ul>
+  <h4>QUESTIONS FOR YOUR TEAM</h4>
+  <ul class="small">
+    <li>{{TEAM_QUESTION_1}}</li>
+    <li>{{TEAM_QUESTION_2}}</li>
+  </ul>
+  <h4>ONE ACTION TO TAKE NEXT</h4>
+  <p>{{ACTION}}</p>
+  <hr class="rule">
+  <p class="small">TRANSITION — {{TRANSITION}}</p>
+  <div class="signature">{{CHAPTER_TITLE}} ends here.</div>
+  <div class="folio-title">{{CHAPTER_TITLE}}</div>
+  <div class="page-number"></div>
+</div>
+
+</body>
+</html>

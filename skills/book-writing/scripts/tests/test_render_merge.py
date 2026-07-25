@@ -57,3 +57,16 @@ def test_merge_creates_missing_parent_directories(book_dir: Path):
     merge(pdfs, book_dir / "dist" / "book.pdf")
 
     assert (book_dir / "dist" / "book.pdf").exists()
+
+
+def test_render_geometry_follows_the_caller_not_the_at_page_rule(book_dir: Path):
+    """A retargeted book must not print onto the stylesheet's default trim."""
+    write_book(book_dir, "a.html", ["<p>a</p>"])
+    manifest = assign_folios([("a.html", 1)])
+
+    pdfs = render_all(
+        book_dir, manifest, book_dir / "out", page_w="6in", page_h="9in"
+    )
+
+    width, height = pdf_geometry_pt(pdfs[0])[0]
+    assert (round(width), round(height)) == (432, 648)

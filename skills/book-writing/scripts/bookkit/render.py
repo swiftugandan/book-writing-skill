@@ -34,7 +34,11 @@ def render_all(
                 height=page_h,
                 margin={"top": "0", "right": "0", "bottom": "0", "left": "0"},
                 print_background=True,
-                prefer_css_page_size=True,
+                # The caller's geometry wins over the stylesheet's `@page`
+                # rule. `@page` cannot read the `--page-w`/`--page-h` tokens,
+                # so deferring to it would silently print a retargeted book
+                # onto the default trim.
+                prefer_css_page_size=False,
             )
             written.append(target)
     return written

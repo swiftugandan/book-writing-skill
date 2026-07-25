@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{BOOK_TITLE}} — Front matter</title>
+  <link rel="stylesheet" href="../assets/interior.css">
+  <style>
+    /* Chapter-local components only, prefixed `ch-`.
+       bookkit.paginate rewrites the counter offset below; do not edit it. */
+    body { counter-reset: page 0; }
+  </style>
+</head>
+<body>
+
+<!-- HALF TITLE — no running head, no folio -->
+<div class="page">
+  <hr class="accent-rule">
+  <h1>{{BOOK_TITLE}}</h1>
+</div>
+
+<!-- TITLE PAGE — no running head, no folio -->
+<div class="page">
+  <hr class="accent-rule">
+  <h1>{{BOOK_TITLE}}</h1>
+  <p class="deck">{{SUBTITLE}}</p>
+  <p class="lead">{{AUTHOR}}</p>
+  <div class="signature">{{IMPRINT}}</div>
+</div>
+
+<!-- COPYRIGHT -->
+<div class="page">
+  <div class="small">
+    <p>{{COPYRIGHT_LINE}}</p>
+    <p>{{RIGHTS_STATEMENT}}</p>
+    <p>{{EDITION_LINE}}</p>
+    <p>{{ISBN_LINE}}</p>
+  </div>
+  <div class="page-number"></div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>Contents</span></div>
+  <h2>Contents</h2>
+  <div class="comparison-row">
+    <div class="small">{{TOC_ENTRY}}</div>
+    <div class="small">{{TOC_FOLIO}}</div>
+  </div>
+  <div class="comparison-row">
+    <div class="small">{{TOC_ENTRY}}</div>
+    <div class="small">{{TOC_FOLIO}}</div>
+  </div>
+  <p class="caption">{{TOC_NOTE}}</p>
+  <div class="folio-title">Contents</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- READING PATHS -->
+<div class="page with-head">
+  <div class="running-head"><span>{{BOOK_TITLE}}</span><span>How to read this book</span></div>
+  <h2>How to read this book</h2>
+  <div class="callout">
+    <span class="label">{{PATH_NAME}}</span>
+    <p>{{PATH_DESCRIPTION}}</p>
+  </div>
+  <div class="callout support">
+    <span class="label support">{{PATH_NAME}}</span>
+    <p>{{PATH_DESCRIPTION}}</p>
+  </div>
+  <div class="folio-title">How to read this book</div>
+  <div class="page-number"></div>
+</div>
+
+<!-- PREFACE OPENER -->
+<div class="page">
+  <div class="eyebrow">Front matter</div>
+  <h1>Preface</h1>
+  <hr class="accent-rule">
+  <p class="dropcap">{{PREFACE_OPENING}}</p>
+  <div class="folio-title">Preface</div>
+  <div class="page-number"></div>
+</div>
+
+</body>
+</html>

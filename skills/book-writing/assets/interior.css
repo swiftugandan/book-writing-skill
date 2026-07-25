@@ -1,0 +1,260 @@
+/* Core interior stylesheet for the book-writing skill.
+   Retarget the whole book by overriding the tokens below. Chapter-local
+   components belong in a page file's inline <style>, prefixed `ch-`. */
+
+:root {
+  --page-w: 7in;
+  --page-h: 10in;
+  --margin: 0.65in;
+
+  --ink: #242424;
+  --paper: #ffffff;
+  --accent: #d54b20;
+  --support: #177c83;
+  --caution: #9a5a12;
+  --muted: #686868;
+  --rule-color: #c9c9c9;
+  --pale: #f1f1f1;
+
+  --serif: Charter, "Bitstream Charter", Georgia, "Times New Roman", serif;
+  --sans: "Avenir Next", Avenir, Arial, Helvetica, sans-serif;
+  --mono: "Courier New", Courier, monospace;
+}
+
+@page { size: 7in 10in; margin: 0; }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #d8d8d8;
+  color: var(--ink);
+  font-family: var(--serif);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ------------------------------------------------------------------ frame */
+
+.page {
+  position: relative;
+  width: var(--page-w);
+  height: var(--page-h);
+  margin: 0 auto 18px;
+  padding: var(--margin);
+  overflow: hidden;
+  break-after: page;
+  page-break-after: always;
+  background: var(--paper);
+  counter-increment: page;
+}
+.page:last-child { break-after: auto; page-break-after: auto; }
+.with-head { padding-top: calc(var(--margin) + 0.08in); }
+
+.running-head {
+  position: absolute;
+  left: var(--margin);
+  right: var(--margin);
+  top: 0.28in;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #bdbdbd;
+  font: 600 7pt/1 var(--sans);
+  color: #555;
+}
+.page-number {
+  position: absolute;
+  right: var(--margin);
+  bottom: 0.26in;
+  font: 600 7.5pt/1 var(--sans);
+  color: #555;
+}
+.page-number::after { content: counter(page); }
+.folio-title {
+  position: absolute;
+  left: var(--margin);
+  bottom: 0.26in;
+  font: 600 7.5pt/1 var(--sans);
+  letter-spacing: 0.025em;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------- typographic scale */
+
+h1, h2, h3, h4, p, ul, ol, blockquote { margin-top: 0; }
+h1, h2, h3, h4, .sans { font-family: var(--sans); }
+h1 { margin-bottom: 18px; font-size: 31pt; line-height: 1.01; letter-spacing: -0.035em; }
+h2 { margin-bottom: 14px; font-size: 18.5pt; line-height: 1.12; letter-spacing: -0.018em; }
+h3 { margin-bottom: 7px; font-size: 11pt; line-height: 1.2; }
+h4 {
+  margin-bottom: 5px;
+  font-size: 8.2pt;
+  line-height: 1.2;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  color: #333;
+}
+p, li { font-size: 9.85pt; line-height: 1.48; }
+p { margin-bottom: 10px; }
+ul, ol { margin-bottom: 11px; padding-left: 19px; }
+li { margin-bottom: 4px; }
+code { font-family: var(--mono); }
+
+.small, .small p, .small li { font-size: 8.25pt; line-height: 1.4; }
+.micro { font: 7.2pt/1.35 var(--sans); color: var(--muted); }
+.lead { font-size: 12pt; line-height: 1.48; }
+.caption { margin-top: 5px; font: 7.4pt/1.35 var(--sans); color: var(--muted); }
+
+/* ------------------------------------------------------------ chapter open */
+
+.eyebrow {
+  margin-bottom: 11px;
+  font: 700 7.4pt/1 var(--sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.deck { margin-bottom: 20px; font-size: 14pt; line-height: 1.36; color: #444; }
+.dropcap::first-letter {
+  float: left;
+  margin: 3px 7px 0 0;
+  font: 750 39pt/0.73 var(--sans);
+  color: var(--accent);
+}
+.opener-number {
+  margin-bottom: 22px;
+  font: 750 72pt/0.8 var(--sans);
+  letter-spacing: -0.08em;
+  color: #f2ddd5;
+}
+
+/* ------------------------------------------------------ rules and emphasis */
+
+.rule { margin: 18px 0; border: 0; border-top: 1px solid var(--rule-color); }
+.accent-rule { width: 0.7in; margin: 0 0 18px; border: 0; border-top: 3px solid var(--accent); }
+.principle {
+  margin: 16px 0;
+  padding: 12px 0 12px 18px;
+  border-left: 4px solid var(--accent);
+  font: 700 13.5pt/1.35 var(--sans);
+}
+.quote {
+  margin: 17px 0;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent);
+  font-size: 13pt;
+  line-height: 1.4;
+  color: #3a3a3a;
+}
+.signature { margin-top: 12px; font: 8pt/1.4 var(--sans); color: var(--muted); }
+
+/* ----------------------------------------------------------------- layout */
+
+.columns-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.columns-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.sidebar-grid { display: grid; grid-template-columns: 1.65fr 0.85fr; gap: 21px; }
+
+/* ------------------------------------------------------------- components */
+
+/* Variants differ by border weight and label glyph as well as hue, so they
+   remain distinguishable in greyscale. Never encode meaning in colour alone. */
+.callout {
+  padding: 13px 15px;
+  border-top: 2px solid #707070;
+  background: var(--pale);
+}
+.callout.support { border-top-color: var(--support); background: #f1f5f5; }
+.callout.caution { border-top-style: double; border-top-width: 4px; border-top-color: var(--caution); background: #f5f2ec; }
+.callout p:last-child, .callout ul:last-child, .callout ol:last-child { margin-bottom: 0; }
+
+.label {
+  display: inline-block;
+  margin-bottom: 7px;
+  font: 700 6.8pt/1 var(--sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #444;
+}
+.label::before { content: "\25A0\00A0"; color: var(--accent); }
+.label.support::before { content: "\25CF\00A0"; color: var(--support); }
+.label.caution::before { content: "\25B2\00A0"; color: var(--caution); }
+
+.spec {
+  margin: 10px 0 14px;
+  padding: 13px 15px;
+  border-left: 4px solid var(--accent);
+  background: var(--pale);
+  font-family: var(--mono);
+}
+.spec h3 { font-family: var(--sans); font-size: 10pt; }
+.spec p, .spec li { margin-bottom: 5px; font: 8.15pt/1.38 var(--mono); }
+.spec ul, .spec ol { margin-bottom: 8px; padding-left: 17px; }
+
+.artifact {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--rule-color);
+  border-top: 3px solid var(--ink);
+}
+.artifact h4 { color: var(--muted); }
+.artifact p:last-child, .artifact ul:last-child { margin-bottom: 0; }
+
+.steps { margin: 14px 0; padding-left: 0; list-style: none; counter-reset: step; }
+.steps li {
+  position: relative;
+  margin-bottom: 9px;
+  padding-left: 27px;
+  counter-increment: step;
+}
+.steps li::before {
+  position: absolute;
+  left: 0;
+  top: 1px;
+  content: counter(step);
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  font: 700 8pt/17px var(--sans);
+  text-align: center;
+  color: var(--accent);
+}
+
+.checklist { margin: 12px 0; padding-left: 0; list-style: none; }
+.checklist li { position: relative; margin-bottom: 6px; padding-left: 20px; }
+.checklist li::before {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  content: "";
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--ink);
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule-color);
+}
+.comparison-row:last-child { border-bottom: 0; }
+
+.matrix { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 8.4pt; }
+.matrix th, .matrix td {
+  padding: 6px 8px;
+  border: 1px solid var(--rule-color);
+  text-align: left;
+  vertical-align: top;
+}
+.matrix th { font: 700 7.4pt/1.2 var(--sans); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.flow-box {
+  padding: 9px 11px;
+  border: 1px solid var(--ink);
+  font: 8.4pt/1.3 var(--sans);
+  text-align: center;
+}

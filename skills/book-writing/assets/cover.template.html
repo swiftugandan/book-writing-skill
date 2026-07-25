@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{BOOK_TITLE}} — Covers</title>
+  <link rel="stylesheet" href="../assets/interior.css">
+  <style>
+    /* Chapter-local components only, prefixed `ch-`.
+       Covers carry no running head and no folio. The counter offset below is
+       still required so bookkit.paginate can treat this like any other file. */
+    body { counter-reset: page 0; }
+  </style>
+</head>
+<body>
+
+<!-- FRONT COVER -->
+<div class="page">
+  <hr class="accent-rule">
+  <div class="eyebrow">{{CATEGORY}}</div>
+  <h1>{{BOOK_TITLE}}</h1>
+  <p class="deck">{{SUBTITLE}}</p>
+  <div class="flow-box">{{COVER_DIAGRAM_CAPTION}}</div>
+  <p class="lead">{{AUTHOR}}</p>
+</div>
+
+<!-- BACK COVER -->
+<div class="page">
+  <div class="eyebrow">{{CATEGORY}}</div>
+  <h2>{{BACK_COVER_HEADLINE}}</h2>
+  <p>{{BACK_COVER_BLURB}}</p>
+  <ul class="checklist">
+    <li>{{OUTCOME_1}}</li>
+    <li>{{OUTCOME_2}}</li>
+    <li>{{OUTCOME_3}}</li>
+  </ul>
+  <hr class="rule">
+  <div class="small">
+    <p>{{AUTHOR_BIO}}</p>
+  </div>
+  <div class="signature">{{IMPRINT}} · {{ISBN_LINE}}</div>
+</div>
+
+</body>
+</html>
