@@ -1,0 +1,11 @@
+{
+  "name": "book-writing",
+  "description": "Turn a drafts/ folder into a produced book: a structural blueprint, hand-paginated chapters, and a verified PDF.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Swift Ugandan"
+  },
+  "homepage": "https://github.com/swiftugandan/book-writing-skill",
+  "license": "MIT",
+  "keywords": ["writing", "book", "typesetting", "pdf", "publishing"]
+}

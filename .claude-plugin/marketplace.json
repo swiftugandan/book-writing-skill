@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "swiftugandan-skills",
+  "description": "Swift Ugandan's public Claude Code skills.",
+  "owner": {
+    "name": "Swift Ugandan"
+  },
+  "plugins": [
+    {
+      "name": "book-writing",
+      "source": "./",
+      "description": "Turn a drafts/ folder into a produced book: a structural blueprint, hand-paginated chapters, and a verified PDF. Carries structure and interior design; content and voice come from your drafts.",
+      "category": "productivity",
+      "keywords": ["writing", "book", "typesetting", "pdf", "publishing"]
+    }
+  ]
+}

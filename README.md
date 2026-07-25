@@ -1,22 +1,35 @@
 # book-writing
 
-A Claude skill that turns a folder of source material into a produced book: a
-structural blueprint, hand-paginated chapters, and a merged, verified PDF.
+[![test](https://github.com/swiftugandan/book-writing-skill/actions/workflows/test.yml/badge.svg)](https://github.com/swiftugandan/book-writing-skill/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-The skill carries **structure** (how a book is architected) and **design** (how the
-interior is built and rendered). It carries **no subject matter and no prose voice** —
-those come from your drafts and your instructions.
+A [Claude Code](https://claude.com/claude-code) skill that turns a folder of source
+material into a produced book: a structural blueprint, hand-paginated chapters, and a
+merged, verified PDF.
+
+It carries **structure**, meaning how a book is architected, and **design**, meaning how
+the interior is built and rendered. It carries **no subject matter and no prose voice**.
+Those come from your drafts and your instructions, which is what keeps it usable for a
+book about anything.
 
 ## Install
 
-Copy the skill directory into your Claude skills folder:
+As a plugin:
 
-```bash
-cp -R skills/book-writing ~/.claude/skills/
+```
+/plugin marketplace add swiftugandan/book-writing-skill
+/plugin install book-writing
 ```
 
-It is self-contained: the Python package, its tests, the stylesheet, the templates,
-and the references all live inside `skills/book-writing/`.
+Or copy the skill directly:
+
+```bash
+git clone https://github.com/swiftugandan/book-writing-skill.git
+cp -R book-writing-skill/skills/book-writing ~/.claude/skills/
+```
+
+The skill directory is self-contained. The Python package, its tests, the stylesheet,
+the templates, and the reference documents all live inside it.
 
 ## Setup
 
@@ -27,43 +40,112 @@ python3 -m venv .venv
 .venv/bin/playwright install chromium
 ```
 
-Requires Python 3.11 or newer. Playwright brings its own Chromium, so no system
-browser is needed.
+Python 3.11 or newer. Playwright brings its own Chromium, so no system browser is
+needed.
 
 ## Use
 
-Put your source material — transcripts, notes, articles, outlines, existing prose —
-in a `drafts/` folder at your project root, then ask Claude to write the book.
+Put your source material in a `drafts/` folder at your project root. Transcripts, notes,
+articles, outlines, half-written prose, anything. Then ask Claude to write the book.
 
-The skill runs six phases:
+The skill runs six phases, reading only the reference it needs for the phase it is in:
 
-1. **Intake** — read `drafts/`, extract the driving problem, the claims (each labelled
-   by evidential standing), the openers, and the candidate running examples.
-2. **Blueprint** — write `STRUCTURE.md`: promise, audience, reading paths, running
-   examples, and per chapter a driving question, beat list, field guide, and example.
-3. **Interior** — set the design tokens in `interior.css` and prove them on one chapter.
-4. **Chapter** — draft and typeset chapters one at a time against the beat pattern.
-5. **Editorial gate** — run each chapter through the `avoid-ai-writing` skill.
-6. **Production** — paginate, render, merge, verify.
+| Phase | What happens |
+|---|---|
+| ① Intake | Read `drafts/`. Extract the driving problem, the claims, the openers, the candidate running examples. Every claim gets labelled by evidential standing. |
+| ② Blueprint | Write `STRUCTURE.md`: promise, audience, reading paths, running examples, and per chapter a driving question, beat list, field guide, and example. |
+| ③ Interior | Set the design tokens and prove them by taking one chapter all the way to PDF. |
+| ④ Chapter | Draft and typeset chapters one at a time against a 13-beat pattern. |
+| ⑤ Editorial gate | Run each chapter through the `avoid-ai-writing` skill. |
+| ⑥ Production | Paginate, render, merge, verify. |
 
-## Production pipeline
+Two ideas do most of the work.
+
+**Every chapter declares one driving question**, and every beat in that chapter must
+serve the answer. It is the test that stops a chapter turning into a topic dump: a beat
+that fails it gets cut or moved to the chapter whose question it actually serves.
+
+**`STRUCTURE.md` is the contract between writing sessions.** A book is written over
+weeks. Without a written architecture, chapter 9 drifts from chapter 2: the running
+example mutates, the audience widens, the same idea arrives twice under different names.
+
+## Book directory
+
+```
+book/
+  interior.css          the core stylesheet, linked by every page file
+  book.order            assembly order, one filename per line
+  front-matter.html
+  chapter-01.html
+  book.manifest.json    written by bookkit.paginate
+  pdf/                  written by bookkit.render
+  book.pdf              written by bookkit.merge
+```
+
+Everything a page needs sits beside it, so any page file opens correctly in a browser
+with no build step.
+
+## Production
 
 ```bash
-SKILL=~/.claude/skills/book-writing   # or ./skills/book-writing in this repo
+SKILL=~/.claude/skills/book-writing
 BOOK=/path/to/your/book
 
 cd "$SKILL/scripts"
 .venv/bin/python -m bookkit.paginate "$BOOK"
 .venv/bin/python -m bookkit.render   "$BOOK"
 .venv/bin/python -m bookkit.merge    "$BOOK"
-.venv/bin/python -m bookkit.verify   "$BOOK" --css "$SKILL/assets/interior.css"
+.venv/bin/python -m bookkit.verify   "$BOOK"
 ```
 
-`verify` exits non-zero on clipped pages, wrong trim geometry, CSS layering
-violations, a stale manifest, and folio discontinuity. Each of those failures is
-silent in a hand-paginated book — text that overflows a page is simply cropped away,
-and a chapter that runs one page long renumbers everything after it — so none of the
-checks is advisory.
+Re-run all four after any content edit. Editing one chapter changes its page count, which
+changes every downstream folio.
+
+## Why verification is not optional
+
+Hand-paginated books fail silently. That is the whole reason this repository contains
+code and not just Markdown.
+
+`.page { overflow: hidden }` is what keeps the trim clean, and it also means content that
+does not fit is cropped away with no error. Text simply vanishes off the bottom of a page
+and the PDF looks fine. Folio offsets have the same shape of problem: assign them by hand,
+let one chapter run a page long, and every page number after it is wrong.
+
+So `bookkit.verify` exits non-zero on all of these:
+
+| Hard failure | What it catches |
+|---|---|
+| Content clipping | Text overflowing its page and disappearing |
+| Geometry mismatch | A page rendering at the wrong trim |
+| CSS layering violation | A chapter-local selector unprefixed, or shadowing the core stylesheet |
+| Folio discontinuity | Page numbers that do not run continuously |
+| Stale manifest | A chapter edited without re-running `paginate` |
+
+`bookkit.merge` adds one more at assembly time: it refuses to write a book whose rendered
+page count disagrees with the manifest.
+
+Page counts drifting from the budget in `STRUCTURE.md` is a warning rather than an error.
+A chapter running long is usually a chapter answering two questions, which is a problem to
+fix in the blueprint.
+
+## Retargeting the design
+
+The interior ships as a technical-publisher trim: 7 × 10 inches, serif body, one restrained
+spot colour. Nine tokens at the top of `interior.css` control all of it.
+
+```css
+--page-w  --page-h  --margin
+--ink  --paper  --accent
+--serif  --sans  --mono
+```
+
+Changing the trim also means passing the new geometry to the tools, since the CSS `@page`
+rule cannot read custom properties:
+
+```bash
+.venv/bin/python -m bookkit.render "$BOOK" --page-w 6in --page-h 9in
+.venv/bin/python -m bookkit.verify "$BOOK" --width-pt 432 --height-pt 648
+```
 
 ## Tests
 
@@ -71,16 +153,26 @@ checks is advisory.
 cd skills/book-writing/scripts && .venv/bin/pytest
 ```
 
+114 tests. CI additionally builds a real book from the shipped templates and runs the four
+documented commands, then confirms `verify` rejects a deliberately clipped page. That
+end-to-end check exists because it caught a bug the unit suite could not: the fixtures
+construct valid layouts by hand, so a template linking the wrong stylesheet path passed
+every unit test and still produced an unstyled book.
+
 ## Attribution
 
 The structural and production design is distilled from
 [swiftugandan/specification-driven-delivery-book](https://github.com/swiftugandan/specification-driven-delivery-book):
 the blueprint format, the chapter beat pattern, the editorial standards, and the
-hand-paginated HTML interior. The pagination and verification tooling is new — the
-source book assigned folio offsets by hand, which this replaces with measured values.
+hand-paginated HTML interior. The pagination and verification tooling is new. That book
+assigned folio offsets by hand, which this replaces with measured values.
 
 The editorial gate delegates to
 [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)
 rather than reimplementing AI-writing detection.
 
-No content from either source is redistributed here.
+No content from either source is redistributed here, and a test asserts as much.
+
+## License
+
+[MIT](LICENSE)

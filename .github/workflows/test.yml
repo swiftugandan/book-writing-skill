@@ -1,0 +1,84 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/book-writing/scripts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the package
+        run: pip install -e '.[dev]'
+
+      # The suite measures real layout, so it needs the browser Playwright
+      # bundles. --with-deps pulls the shared libraries Chromium needs on a
+      # bare runner.
+      - name: Install Chromium
+        run: playwright install --with-deps chromium
+
+      - name: Run tests
+        run: pytest -q
+
+  pipeline:
+    name: production pipeline
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/book-writing/scripts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -e '.[dev]'
+      - run: playwright install --with-deps chromium
+
+      # Builds a real book from the shipped templates and runs the four
+      # documented commands. This is the check that caught the stylesheet
+      # resolution bug the unit suite could not: the fixtures construct valid
+      # layouts by hand, so only an end-to-end run from the real assets fails
+      # when a template links the wrong path.
+      - name: Build a book from the shipped templates
+        run: |
+          BOOK="$RUNNER_TEMP/book"
+          mkdir -p "$BOOK"
+          cp ../assets/interior.css                  "$BOOK/interior.css"
+          cp ../assets/front-matter.template.html    "$BOOK/front-matter.html"
+          cp ../assets/chapter.template.html         "$BOOK/chapter-01.html"
+          cp ../assets/chapter.template.html         "$BOOK/chapter-02.html"
+          printf 'front-matter.html\nchapter-01.html\nchapter-02.html\n' > "$BOOK/book.order"
+
+          python -m bookkit.paginate "$BOOK"
+          python -m bookkit.render   "$BOOK"
+          python -m bookkit.merge    "$BOOK"
+          python -m bookkit.verify   "$BOOK"
+
+      - name: Verification must reject a clipped page
+        run: |
+          BOOK="$RUNNER_TEMP/book"
+          python - "$BOOK/chapter-01.html" <<'PY'
+          import pathlib, sys
+          p = pathlib.Path(sys.argv[1])
+          p.write_text(p.read_text().replace("<p>{{PROBLEM_BODY}}</p>", "<p>overflow</p>" * 400))
+          PY
+          if python -m bookkit.verify "$BOOK"; then
+            echo "::error::verify passed a clipped page"
+            exit 1
+          fi
+          echo "verify correctly rejected the clipped page"
