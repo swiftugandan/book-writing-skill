@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Build output — regenerate with the bookkit pipeline
+book/pdf/
+book/*.pdf
