@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410.4pt" height="86pt"
+     viewBox="0 0 410.4 86" role="img"
+     aria-label="Four steps in sequence: draft, review, approve, ship. Review is
+                 reached again by a dashed rejection path from approve.">
+  <defs>
+    <marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink, #242424)"/>
+    </marker>
+  </defs>
+
+  <rect x="0.5" y="8.5" width="86" height="34" rx="2" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="43.5" y="30" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Draft</text>
+
+  <line x1="88" y1="25.5" x2="106" y2="25.5" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#flow-arrow)"/>
+
+  <rect x="108.5" y="8.5" width="86" height="34" rx="2" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="151.5" y="30" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Review</text>
+
+  <line x1="196" y1="25.5" x2="214" y2="25.5" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#flow-arrow)"/>
+
+  <!-- The decision point is emphasised by a heavier stroke as well as a
+       lighter fill, so it still reads as the pivot in greyscale. -->
+  <rect x="216.5" y="8.5" width="86" height="34" rx="2" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="2"/>
+  <text x="259.5" y="30" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Approve</text>
+
+  <line x1="304" y1="25.5" x2="322" y2="25.5" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#flow-arrow)"/>
+
+  <rect x="324.5" y="8.5" width="85" height="34" rx="2" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="367" y="30" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Ship</text>
+
+  <!-- The rejection branch is dashed, so the exceptional path reads as
+       exceptional without relying on colour. -->
+  <path d="M 259.5 44 L 259.5 62 L 151.5 62 L 151.5 46" fill="none"
+        stroke="var(--ink, #242424)" stroke-width="1" stroke-dasharray="4 3"
+        marker-end="url(#flow-arrow)"/>
+  <text x="205.5" y="76" text-anchor="middle" font-size="7.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">rejected</text>
+</svg>

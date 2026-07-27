@@ -1,4 +1,6 @@
-from bookkit.diagrams import static_findings
+import pytest
+
+from bookkit.diagrams import length_to_pt, static_findings
 
 CLEAN = (
     '<svg xmlns="http://www.w3.org/2000/svg" width="5.7in" height="1in" '
@@ -104,3 +106,34 @@ def test_unitless_dimensions_are_rejected():
     bad = CLEAN.replace('width="5.7in"', 'width="540"')
 
     assert "unit" in _messages(bad)
+
+
+# --- length parsing -----------------------------------------------------------
+# Print size comes from the declared width attribute, never from how a browser
+# window happens to display the document.
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        ("72pt", 72.0),
+        ("1in", 72.0),
+        ("5.7in", 410.4),
+        ("410.4pt", 410.4),
+        ("25.4mm", 72.0),
+        ("2.54cm", 72.0),
+        ("96px", 72.0),
+    ],
+)
+def test_length_to_pt_converts_each_unit(value: str, expected: float):
+    assert length_to_pt(value) == pytest.approx(expected)
+
+
+def test_length_to_pt_treats_a_bare_number_as_px():
+    assert length_to_pt("96") == pytest.approx(72.0)
+
+
+def test_length_to_pt_rejects_what_it_cannot_read():
+    assert length_to_pt("") is None
+    assert length_to_pt("auto") is None
+    assert length_to_pt("50%") is None

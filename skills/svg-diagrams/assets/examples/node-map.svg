@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410.4pt" height="128pt"
+     viewBox="0 0 410.4 128" role="img"
+     aria-label="Two actors, a coordinator and a volunteer, connected by lines
+                 to three capabilities: publish a shift, claim a shift, and
+                 withdraw. Claim a shift is reached by both actors.">
+  <text x="0" y="10" font-size="7.5" letter-spacing="0.8"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">ACTORS</text>
+  <text x="409" y="10" text-anchor="end" font-size="7.5" letter-spacing="0.8"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">CAPABILITIES</text>
+
+  <rect x="0.5" y="22.5" width="108" height="30" rx="15" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="54.5" y="41" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Coordinator</text>
+
+  <rect x="0.5" y="74.5" width="108" height="30" rx="15" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="54.5" y="93" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Volunteer</text>
+
+  <!-- Capabilities are squared off and carry a heavier stroke as well as a
+       lighter fill. Shape and weight do the work that colour cannot:
+       --pale against --paper is 1.13:1 in greyscale. -->
+  <rect x="273" y="9" width="136.4" height="28" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="2"/>
+  <text x="341" y="27" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Publish a shift</text>
+
+  <rect x="273" y="49" width="136.4" height="28" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="2"/>
+  <text x="341" y="67" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Claim a shift</text>
+
+  <rect x="273" y="89" width="136.4" height="28" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="2"/>
+  <text x="341" y="107" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Withdraw</text>
+
+  <line x1="110" y1="37.5" x2="271" y2="23" stroke="var(--ink, #242424)" stroke-width="1"/>
+  <line x1="110" y1="37.5" x2="271" y2="63" stroke="var(--ink, #242424)" stroke-width="1"/>
+  <line x1="110" y1="89.5" x2="271" y2="63" stroke="var(--ink, #242424)" stroke-width="1"/>
+  <line x1="110" y1="89.5" x2="271" y2="103" stroke="var(--ink, #242424)" stroke-width="1"/>
+
+  <text x="0" y="124" font-size="7.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">A capability reached by two actors needs two sets of preconditions.</text>
+</svg>

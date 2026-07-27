@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="288pt" height="150pt"
+     viewBox="0 0 288 150" role="img"
+     aria-label="A four-step loop: specify, build, verify, learn, returning to
+                 specify.">
+  <defs>
+    <marker id="cycle-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink, #242424)"/>
+    </marker>
+  </defs>
+
+  <rect x="84.5" y="0.5" width="118" height="32" rx="2" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="143.5" y="21" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Specify</text>
+
+  <rect x="170.5" y="58.5" width="117" height="32" rx="2" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="229" y="79" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Build</text>
+
+  <!-- Verify is the gate, so it carries a heavier stroke as well as the
+       lighter fill. --pale against --paper is only 1.13:1 in greyscale. -->
+  <rect x="84.5" y="116.5" width="118" height="32" rx="2" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="2"/>
+  <text x="143.5" y="137" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Verify</text>
+
+  <rect x="0.5" y="58.5" width="117" height="32" rx="2" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="59" y="79" text-anchor="middle" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Learn</text>
+
+  <path d="M 203 16 L 229 16 L 229 56" fill="none" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#cycle-arrow)"/>
+  <path d="M 229 92 L 229 132 L 205 132" fill="none" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#cycle-arrow)"/>
+  <path d="M 84 132 L 59 132 L 59 93" fill="none" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#cycle-arrow)"/>
+  <path d="M 59 57 L 59 16 L 83 16" fill="none" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-end="url(#cycle-arrow)"/>
+</svg>

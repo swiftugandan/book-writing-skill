@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410.4pt" height="132pt"
+     viewBox="0 0 410.4 132" role="img"
+     aria-label="A use-case artifact on the left with three leader lines
+                 pointing right, naming its parts: the name in domain language,
+                 the observable behaviour, and the invariant that always holds.">
+  <defs>
+    <marker id="anat-tick" viewBox="0 0 8 8" refX="1" refY="4"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 8 0 L 0 4 L 8 8 z" fill="var(--ink, #242424)"/>
+    </marker>
+  </defs>
+
+  <!-- The card is unfilled, so the header band is the only painted fill and
+       nothing competes with it tonally. -->
+  <rect x="0.5" y="0.5" width="228" height="118" fill="none"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+
+  <rect x="0.5" y="0.5" width="228" height="24" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="10" y="17" font-size="8.5"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">Claim a shift</text>
+
+  <text x="10" y="43" font-size="8"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">Given a published shift</text>
+  <text x="10" y="59" font-size="8"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">When a volunteer claims it</text>
+  <text x="10" y="75" font-size="8"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">Then the roster shows them</text>
+
+  <line x1="10" y1="88" x2="218" y2="88" stroke="var(--ink, #242424)" stroke-width="0.5"/>
+  <text x="10" y="105" font-size="8"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">Capacity must not be exceeded</text>
+
+  <line x1="232" y1="12" x2="262" y2="12" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-start="url(#anat-tick)"/>
+  <text x="266" y="15" font-size="8"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Name, in the domain language</text>
+
+  <line x1="232" y1="59" x2="262" y2="59" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-start="url(#anat-tick)"/>
+  <text x="266" y="62" font-size="8"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Observable behaviour</text>
+
+  <line x1="232" y1="101" x2="262" y2="101" stroke="var(--ink, #242424)"
+        stroke-width="1" marker-start="url(#anat-tick)"/>
+  <text x="266" y="104" font-size="8"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Invariant that always holds</text>
+</svg>

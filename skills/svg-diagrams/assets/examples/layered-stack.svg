@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410.4pt" height="112pt"
+     viewBox="0 0 410.4 112" role="img"
+     aria-label="Four responsibility bands stacked from interface at the top
+                 down to storage, which sits outside the boundary and is drawn
+                 with a dashed edge.">
+  <!-- The top band is emphasised by a heavier stroke as well as a lighter
+       fill, since --pale and --paper are 1.13:1 apart in greyscale. -->
+  <rect x="1" y="1" width="408.4" height="26" fill="var(--pale, #f1f1f1)"
+        stroke="var(--ink, #242424)" stroke-width="2"/>
+  <text x="8" y="18" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Interface</text>
+  <text x="402" y="18" text-anchor="end" font-size="7.5"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">what the reader touches</text>
+
+  <rect x="0.5" y="28.5" width="409" height="26" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="8" y="45" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Behaviour</text>
+  <text x="402" y="45" text-anchor="end" font-size="7.5"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">rules that must hold</text>
+
+  <rect x="0.5" y="56.5" width="409" height="26" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1"/>
+  <text x="8" y="73" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Domain</text>
+  <text x="402" y="73" text-anchor="end" font-size="7.5"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">the shared language</text>
+
+  <!-- Outside the boundary is dashed rather than differently coloured, so
+       the distinction survives a monochrome print. -->
+  <rect x="0.5" y="84.5" width="409" height="26" fill="var(--paper, #ffffff)"
+        stroke="var(--ink, #242424)" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="8" y="101" font-size="8.5"
+        font-family="var(--sans, 'Avenir Next', Arial, sans-serif)"
+        fill="var(--ink, #242424)">Storage</text>
+  <text x="402" y="101" text-anchor="end" font-size="7.5"
+        font-family="var(--mono, 'Courier New', monospace)"
+        fill="var(--ink, #242424)">outside the boundary</text>
+</svg>

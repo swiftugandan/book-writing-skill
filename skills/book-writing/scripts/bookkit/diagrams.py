@@ -54,6 +54,24 @@ def parse_color(value: str) -> tuple[int, int, int] | None:
     return None
 
 
+_LENGTH = re.compile(r"^\s*(-?[\d.]+)\s*([a-z%]*)\s*$", re.IGNORECASE)
+
+# Points per unit. A page is a physical object, so px is only a fallback.
+_UNIT_PT = {"pt": 1.0, "in": 72.0, "mm": 72.0 / 25.4, "cm": 72.0 / 2.54, "px": 0.75, "": 0.75}
+
+
+def length_to_pt(value: str) -> float | None:
+    """Read an SVG length into points. `None` when it cannot be read."""
+    match = _LENGTH.match(value or "")
+    if not match:
+        return None
+    magnitude, unit = match.groups()
+    factor = _UNIT_PT.get(unit.lower())
+    if factor is None:
+        return None
+    return float(magnitude) * factor
+
+
 def _linearise(channel: int) -> float:
     c = channel / 255
     return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
@@ -153,9 +171,10 @@ _COLLECT_JS = """
     .getPropertyValue('--paper').trim() || 'rgb(255, 255, 255)';
   return Array.from(document.querySelectorAll('svg')).map((svg, index) => {
     const box = svg.viewBox.baseVal;
-    const rendered = svg.getBoundingClientRect();
-    // Rendered width is CSS px; 0.75 converts to points.
-    const scale = box.width ? (rendered.width * 0.75) / box.width : 1;
+    // The declared width is the physical print size. getBoundingClientRect
+    // measures how the browser window happens to display the document, which
+    // for a standalone .svg is the viewport, not the page.
+    const declaredWidth = svg.getAttribute('width') || '';
 
     const geometry = (el) => {
       let b;
@@ -181,14 +200,15 @@ _COLLECT_JS = """
       return Object.assign({
         content: (el.textContent || '').trim(),
         fill: s.fill,
-        size_pt: parseFloat(s.fontSize) * scale,
+        size_px: parseFloat(s.fontSize),
       }, geometry(el));
     });
 
     return {
       index,
       viewbox: [box.x, box.y, box.width, box.height],
-      scale, paper, shapes, texts,
+      declared_width: declaredWidth,
+      paper, shapes, texts,
       source: svg.outerHTML,
     };
   });
@@ -232,6 +252,15 @@ class Diagram:
     source: str
 
 
+def _scale_for(item: dict) -> float:
+    """Points per SVG user unit, from the declared width over the viewBox."""
+    viewbox_width = item["viewbox"][2]
+    declared_pt = length_to_pt(item["declared_width"])
+    if not viewbox_width or declared_pt is None:
+        return 1.0
+    return declared_pt / viewbox_width
+
+
 def find_diagrams(path: Path) -> list[Diagram]:
     """Every inline <svg> in an HTML file, or the root of an .svg file."""
     with browser_page() as page:
@@ -243,10 +272,21 @@ def find_diagrams(path: Path) -> list[Diagram]:
             file=path.name,
             index=item["index"],
             viewbox=tuple(item["viewbox"]),
-            scale_pt_per_unit=item["scale"],
+            scale_pt_per_unit=_scale_for(item),
             paper=item["paper"],
             shapes=tuple(DiagramShape(**shape) for shape in item["shapes"]),
-            texts=tuple(DiagramText(**text) for text in item["texts"]),
+            texts=tuple(
+                DiagramText(
+                    content=text["content"],
+                    fill=text["fill"],
+                    size_pt=text["size_px"] * _scale_for(item),
+                    x=text["x"],
+                    y=text["y"],
+                    width=text["width"],
+                    height=text["height"],
+                )
+                for text in item["texts"]
+            ),
             source=item["source"],
         )
         for item in raw
