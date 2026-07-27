@@ -3,11 +3,11 @@
      aria-label="Describe the diagram for a reader who cannot see it">
   <!-- One user unit is one point, so font-size="9" means 9pt on paper.
        Width 410.4 is the text measure at the default 7x10in trim:
-       --page-w minus twice --margin.
-       Every colour is var(--token, fallback), so the diagram picks up the
+       the page width minus twice the margin.
+       Every colour uses var() with a fallback, so the diagram picks up the
        book's palette when inline and still renders on its own.
        The emphasised box below carries a heavier stroke as well as a lighter
-       fill, because --paper and --pale are 1.13:1 apart in greyscale and
+       fill, because the paper and pale tokens are 1.13:1 apart in greyscale and
        colour alone would not survive print. -->
   <defs>
     <marker id="tpl-arrow" viewBox="0 0 10 10" refX="9" refY="5"

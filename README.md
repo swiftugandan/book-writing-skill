@@ -177,6 +177,14 @@ The checker also rejects text below a 6pt print floor, measured at rendered scal
 than in user units, since a viewBox that scales its contents will happily print a 10-unit
 label at 5pt.
 
+Then it rasterises the diagram and checks the pixels. Declared styles describe intent;
+`fill-opacity`, an `opacity` on a parent group, and shapes that paint nothing are all
+invisible to them. Worse, the declared checks pass **vacuously** on an empty diagram, since
+with no shapes there is nothing to compare. Four of the six examples here once carried `--`
+inside an XML comment, which is illegal: they worked inline, failed to parse standalone, and
+rendered nothing while every declared check reported `OK`. The raster pass caught it on the
+first run with `renders blank: 0.00%`.
+
 ```bash
 .venv/bin/python -m bookkit.diagrams /path/to/book-or-file
 ```
@@ -206,7 +214,7 @@ rule cannot read custom properties:
 cd skills/book-writing/scripts && .venv/bin/pytest
 ```
 
-245 tests. CI additionally builds a real book from the shipped templates and runs the four
+271 tests. CI additionally builds a real book from the shipped templates and runs the four
 documented commands, then confirms `verify` rejects a deliberately clipped page. That
 end-to-end check exists because it caught a bug the unit suite could not: the fixtures
 construct valid layouts by hand, so a template linking the wrong stylesheet path passed

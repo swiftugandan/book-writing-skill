@@ -9,12 +9,15 @@ and sit at a greyscale contrast of 1.14:1, which is the same grey on paper.
 from __future__ import annotations
 
 import argparse
+import io
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import combinations
 from pathlib import Path
 from typing import Sequence
+
+from PIL import Image
 
 from bookkit.findings import Finding, has_errors
 from bookkit.measure import browser_page
@@ -97,6 +100,7 @@ _PAINT_ATTR = re.compile(r'\b(fill|stroke)\s*=\s*"([^"]*)"', re.IGNORECASE)
 _DIMENSION = re.compile(r'\b(width|height)\s*=\s*"([^"]*)"', re.IGNORECASE)
 _VIEWBOX = re.compile(r'\bviewBox\s*=\s*"([^"]*)"', re.IGNORECASE)
 _ALLOWED_UNITS = ("in", "pt", "mm", "cm")
+_COMMENT = re.compile(r"<!--(.*?)-->", re.DOTALL)
 
 
 def _error(file: str, index: int, message: str) -> Finding:
@@ -119,6 +123,19 @@ def static_findings(source: str, file: str, index: int) -> list[Finding]:
                 "use var(--token, fallback) so the diagram retargets with the book",
             )
         )
+
+    for body in _COMMENT.findall(source):
+        if "--" in body:
+            findings.append(
+                _error(
+                    file,
+                    index,
+                    "`--` inside an XML comment. The file parses inline, because "
+                    "the HTML parser is lenient, and fails to parse the moment it "
+                    "is saved standalone, where it then renders nothing at all",
+                )
+            )
+            break
 
     if re.search(r"<image\b", source, re.IGNORECASE):
         findings.append(
@@ -250,6 +267,12 @@ class Diagram:
     shapes: tuple[DiagramShape, ...]
     texts: tuple[DiagramText, ...]
     source: str
+    # The drawn pixels, flattened onto the paper colour. `None` when the element
+    # could not be captured, which the raster checks treat as nothing to say.
+    # PIL defines __eq__, so an Image is excluded from comparison and repr to
+    # keep Diagram cheap to compare and readable when a test fails.
+    raster: Image.Image | None = field(default=None, compare=False, repr=False)
+    ink_coverage: float = 0.0
 
 
 def _scale_for(item: dict) -> float:
@@ -261,36 +284,56 @@ def _scale_for(item: dict) -> float:
     return declared_pt / viewbox_width
 
 
+def _screenshot(handle) -> bytes | None:
+    try:
+        return handle.screenshot(type="png")
+    except Exception:  # a zero-size or detached element has nothing to capture
+        return None
+
+
 def find_diagrams(path: Path) -> list[Diagram]:
-    """Every inline <svg> in an HTML file, or the root of an .svg file."""
+    """Every inline <svg> in an HTML file, or the root of an .svg file.
+
+    Each diagram is read twice: once through the DOM for what it declares, and
+    once as pixels for what it draws.
+    """
     with browser_page() as page:
         page.goto(path.resolve().as_uri(), wait_until="load")
         raw = page.evaluate(_COLLECT_JS)
+        shots = [_screenshot(handle) for handle in page.query_selector_all("svg")]
 
-    return [
-        Diagram(
-            file=path.name,
-            index=item["index"],
-            viewbox=tuple(item["viewbox"]),
-            scale_pt_per_unit=_scale_for(item),
-            paper=item["paper"],
-            shapes=tuple(DiagramShape(**shape) for shape in item["shapes"]),
-            texts=tuple(
-                DiagramText(
-                    content=text["content"],
-                    fill=text["fill"],
-                    size_pt=text["size_px"] * _scale_for(item),
-                    x=text["x"],
-                    y=text["y"],
-                    width=text["width"],
-                    height=text["height"],
-                )
-                for text in item["texts"]
-            ),
-            source=item["source"],
+    diagrams = []
+    for item in raw:
+        png = shots[item["index"]] if item["index"] < len(shots) else None
+        paper = parse_color(item["paper"]) or (255, 255, 255)
+        raster = _composite_on(png, paper) if png else None
+        scale = _scale_for(item)
+        diagrams.append(
+            Diagram(
+                file=path.name,
+                index=item["index"],
+                viewbox=tuple(item["viewbox"]),
+                scale_pt_per_unit=scale,
+                paper=item["paper"],
+                shapes=tuple(DiagramShape(**shape) for shape in item["shapes"]),
+                texts=tuple(
+                    DiagramText(
+                        content=text["content"],
+                        fill=text["fill"],
+                        size_pt=text["size_px"] * scale,
+                        x=text["x"],
+                        y=text["y"],
+                        width=text["width"],
+                        height=text["height"],
+                    )
+                    for text in item["texts"]
+                ),
+                source=item["source"],
+                raster=raster,
+                ink_coverage=_ink_coverage(raster, paper) if raster else 0.0,
+            )
         )
-        for item in raw
-    ]
+    return diagrams
 
 
 def _background_for(diagram: Diagram, text: DiagramText) -> str:
@@ -401,6 +444,7 @@ def check_diagrams(paths: Sequence[Path]) -> list[Finding]:
         for diagram in find_diagrams(path):
             findings.extend(static_findings(diagram.source, diagram.file, diagram.index))
             findings.extend(rendered_findings(diagram))
+            findings.extend(rasterised_findings(diagram))
     return findings
 
 
@@ -427,6 +471,143 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
     print(f"OK: diagrams in {len(paths)} file(s) verified")
     return 0
+
+
+
+# ---------------------------------------------------------------- raster checks
+
+MIN_INK_COVERAGE = 0.004
+SAME_AS_PAPER = 1.05
+
+_SAMPLE_GRID = 20
+_INK_CHANNEL_DELTA = 8
+
+
+def _composite_on(png: bytes, paper: tuple[int, int, int]) -> Image.Image:
+    """Flatten the screenshot onto the paper colour, the way printing does."""
+    shot = Image.open(io.BytesIO(png)).convert("RGBA")
+    sheet = Image.new("RGBA", shot.size, paper + (255,))
+    return Image.alpha_composite(sheet, shot).convert("RGB")
+
+
+def _median_tone(
+    image: Image.Image, box: tuple[float, float, float, float]
+) -> tuple[int, int, int] | None:
+    """The median colour inside a box, inset to stay clear of its own stroke."""
+    left, top, width, height = box
+    inset = max(1.0, min(width, height) * 0.3)
+    left, top = left + inset, top + inset
+    width, height = width - 2 * inset, height - 2 * inset
+    if width < 1 or height < 1:
+        return None
+
+    columns = max(1, min(_SAMPLE_GRID, int(width)))
+    rows = max(1, min(_SAMPLE_GRID, int(height)))
+    samples = []
+    for row in range(rows):
+        for column in range(columns):
+            x = int(left + (column + 0.5) * width / columns)
+            y = int(top + (row + 0.5) * height / rows)
+            if 0 <= x < image.width and 0 <= y < image.height:
+                samples.append(image.getpixel((x, y)))
+    if not samples:
+        return None
+    return sorted(samples, key=relative_luminance)[len(samples) // 2]
+
+
+def _ink_coverage(image: Image.Image, paper: tuple[int, int, int]) -> float:
+    """Share of the diagram carrying paint that differs from the paper."""
+    step = max(1, min(image.width, image.height) // 200)
+    total = inked = 0
+    for y in range(0, image.height, step):
+        for x in range(0, image.width, step):
+            pixel = image.getpixel((x, y))
+            total += 1
+            if max(abs(a - b) for a, b in zip(pixel, paper)) > _INK_CHANNEL_DELTA:
+                inked += 1
+    return inked / total if total else 0.0
+
+
+def rasterised_findings(diagram: Diagram) -> list[Finding]:
+    """Checks that read the drawn pixels rather than the declared styles.
+
+    Computed styles describe intent. `fill-opacity`, `opacity` on an ancestor,
+    and shapes that paint nothing at all are invisible to them, so a diagram can
+    satisfy every other rule and still reach the page blank.
+    """
+    if diagram.raster is None:
+        return []
+
+    file, index = diagram.file, diagram.index
+    findings: list[Finding] = []
+    paper = parse_color(diagram.paper) or (255, 255, 255)
+    image = diagram.raster
+
+    if diagram.ink_coverage < MIN_INK_COVERAGE:
+        return [
+            _error(
+                file,
+                index,
+                f"renders blank: {diagram.ink_coverage * 100:.2f}% of the diagram "
+                "carries any paint. Check for fill-opacity, an opacity on a "
+                "parent group, or shapes that paint nothing",
+            )
+        ]
+
+    scale = image.width / diagram.viewbox[2] if diagram.viewbox[2] else 1.0
+    tones: dict[str, list[tuple[int, int, int]]] = {}
+
+    for shape in diagram.shapes:
+        declared = parse_color(shape.fill)
+        if not declared:
+            continue
+        tone = _median_tone(
+            image,
+            (
+                (shape.x - diagram.viewbox[0]) * scale,
+                (shape.y - diagram.viewbox[1]) * scale,
+                shape.width * scale,
+                shape.height * scale,
+            ),
+        )
+        if tone is None:
+            continue
+        tones.setdefault(shape.fill, []).append(tone)
+
+        declares_ink = contrast_ratio(declared, paper) >= MIN_FILL_CONTRAST
+        if declares_ink and contrast_ratio(tone, paper) < SAME_AS_PAPER:
+            findings.append(
+                _error(
+                    file,
+                    index,
+                    f"a <{shape.tag}> declares fill {shape.fill} but renders "
+                    "indistinguishable from the paper; the paint is there in the "
+                    "styles and not on the page",
+                )
+            )
+
+    by_fill = {
+        fill: [s for s in diagram.shapes if s.fill == fill and parse_color(s.fill)]
+        for fill in tones
+    }
+    for left, right in combinations(sorted(tones), 2):
+        a, b = parse_color(left), parse_color(right)
+        if not a or not b or contrast_ratio(a, b) < MIN_FILL_CONTRAST:
+            continue  # already reported against the declared values
+        rendered = contrast_ratio(tones[left][0], tones[right][0])
+        if rendered >= MIN_FILL_CONTRAST or _differentiated(by_fill[left], by_fill[right]):
+            continue
+        findings.append(
+            _error(
+                file,
+                index,
+                f"fills {left} and {right} are {contrast_ratio(a, b):.2f}:1 apart "
+                f"as declared but render only {rendered:.2f}:1 apart, below "
+                f"{MIN_FILL_CONTRAST}:1; opacity or overlap has collapsed them",
+            )
+        )
+
+    return findings
 
 
 if __name__ == "__main__":

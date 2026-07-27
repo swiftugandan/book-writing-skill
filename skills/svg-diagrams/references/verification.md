@@ -32,6 +32,31 @@ the cost of not maintaining two copies of the same checks.
 | External or raster reference | any | The PDF renders a missing graphic. The build succeeds. |
 | Gradients, filters, shadows | any | Banned by the layout discipline. They also print as mud. |
 | Dimensions | present, not `px` | Without a physical unit the print size depends on rendering context rather than on intent. |
+| `--` in an XML comment | any | The file parses inline and fails standalone, where it renders nothing. |
+
+## The rendered pass
+
+Everything above reads what the SVG declares. The last group reads what it
+draws, by rasterising each diagram and flattening it onto the paper colour.
+
+| Check | Catches |
+|---|---|
+| Blank diagram | Less than 0.4% of the area carries paint. Nothing else notices, because a diagram with no painted shapes has nothing to compare. |
+| Declared ink that renders as paper | `fill-opacity` near zero, or an `opacity` on a parent group. Computed style still reports the full colour. |
+| Rendered tonal collapse | Two fills far apart on their declared values that composite to the same tone. |
+
+This pass exists because the declared checks share a blind spot: **they pass
+vacuously on an empty diagram.** With no shapes to inspect, every rule is
+satisfied.
+
+That is not hypothetical. Four of the six examples shipped here once carried
+`--` inside an XML comment, which is illegal. They parsed fine inline, failed to
+parse as standalone files, and rendered nothing. Every declared check reported
+`OK` on them, precisely because the parse failure left nothing to check. The
+first raster run reported `renders blank: 0.00%` and the bug was obvious.
+
+Declared checks tell you the diagram is described correctly. Only the rendered
+pass tells you it exists.
 
 ## The escape for a low-contrast pair
 

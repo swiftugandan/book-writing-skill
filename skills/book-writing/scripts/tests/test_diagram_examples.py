@@ -62,3 +62,39 @@ def test_example_describes_itself_for_a_reader_who_cannot_see_it(name: str):
 
     assert 'role="img"' in source
     assert "aria-label=" in source
+
+
+# --- the rendered pass --------------------------------------------------------
+# Declared styles say what a diagram intends. These assert what it draws, so a
+# shipped example cannot regress into something that renders blank or faint.
+
+
+@pytest.mark.parametrize("name", EXPECTED)
+def test_example_passes_the_rendered_pass(name: str):
+    from bookkit.diagrams import rasterised_findings
+
+    diagram = find_diagrams(EXAMPLES / name)[0]
+    findings = rasterised_findings(diagram)
+
+    assert findings == [], "\n".join(f.message for f in findings)
+
+
+@pytest.mark.parametrize("name", EXPECTED)
+def test_example_actually_puts_ink_on_the_page(name: str):
+    """Not merely above the blank floor: a real diagram covers real area."""
+    from bookkit.diagrams import MIN_INK_COVERAGE
+
+    diagram = find_diagrams(EXAMPLES / name)[0]
+
+    assert diagram.ink_coverage > MIN_INK_COVERAGE * 2, (
+        f"{name} draws only {diagram.ink_coverage * 100:.2f}% ink"
+    )
+
+
+def test_the_template_passes_the_rendered_pass():
+    from bookkit.diagrams import rasterised_findings
+
+    diagram = find_diagrams(ASSETS / "diagram.template.svg")[0]
+    findings = rasterised_findings(diagram)
+
+    assert findings == [], "\n".join(f.message for f in findings)

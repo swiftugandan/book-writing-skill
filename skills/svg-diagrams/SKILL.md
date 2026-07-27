@@ -56,3 +56,8 @@ collapse in greyscale without another differentiating channel, content cropped b
 `viewBox`, hardcoded colours, external or raster references, gradients and filters, and
 missing or `px` dimensions. Every one of those is invisible on a backlit screen and obvious
 on paper, which is why none of them is a warning.
+
+It then **rasterises the diagram and checks the pixels**: that ink actually reaches the
+page, that no shape declares a fill and renders as paper, and that no two fills composite to
+the same tone. The declared checks share one blind spot, which is that they pass vacuously
+on an empty diagram. Only the rendered pass tells you the diagram exists.

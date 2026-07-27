@@ -38,7 +38,7 @@
         stroke-width="1" marker-end="url(#pipe-arrow)"/>
 
   <!-- The terminal stage carries a heavier stroke as well as the lighter
-       fill; --pale against --paper is 1.13:1 in greyscale on its own. -->
+       fill; pale against paper is 1.13:1 in greyscale on its own. -->
   <rect x="296.5" y="18.5" width="112" height="40" fill="var(--pale, #f1f1f1)"
         stroke="var(--ink, #242424)" stroke-width="2"/>
   <text x="352.5" y="36" text-anchor="middle" font-size="9"

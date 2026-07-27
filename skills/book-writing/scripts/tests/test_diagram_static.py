@@ -137,3 +137,27 @@ def test_length_to_pt_rejects_what_it_cannot_read():
     assert length_to_pt("") is None
     assert length_to_pt("auto") is None
     assert length_to_pt("50%") is None
+
+
+# --- XML comment hygiene ------------------------------------------------------
+# `--` is illegal inside an XML comment. An SVG carrying one still works inline
+# in an HTML page, because the HTML parser is lenient, and fails to parse the
+# moment the same file is saved standalone. It then renders nothing at all.
+
+
+def test_double_hyphen_inside_a_comment_is_rejected():
+    bad = CLEAN.replace("<rect", "<!-- uses --pale and --paper --><rect")
+
+    assert "comment" in _messages(bad)
+
+
+def test_an_ordinary_comment_is_allowed():
+    ok = CLEAN.replace("<rect", "<!-- a perfectly normal note --><rect")
+
+    assert static_findings(ok, "d.svg", 0) == []
+
+
+def test_an_em_dash_in_a_comment_is_allowed():
+    ok = CLEAN.replace("<rect", "<!-- a note, with an aside, in prose --><rect")
+
+    assert static_findings(ok, "d.svg", 0) == []

@@ -4,7 +4,7 @@
                  down to storage, which sits outside the boundary and is drawn
                  with a dashed edge.">
   <!-- The top band is emphasised by a heavier stroke as well as a lighter
-       fill, since --pale and --paper are 1.13:1 apart in greyscale. -->
+       fill, since the pale and paper tokens are 1.13:1 apart in greyscale. -->
   <rect x="1" y="1" width="408.4" height="26" fill="var(--pale, #f1f1f1)"
         stroke="var(--ink, #242424)" stroke-width="2"/>
   <text x="8" y="18" font-size="8.5"

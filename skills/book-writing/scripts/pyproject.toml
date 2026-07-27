@@ -6,6 +6,9 @@ requires-python = ">=3.11"
 dependencies = [
     "playwright>=1.49",
     "pypdf>=5.1",
+    # Rasterising a diagram is the only way to confirm ink actually reaches
+    # the page; computed styles describe intent, not output.
+    "pillow>=10.0",
 ]
 
 [project.optional-dependencies]

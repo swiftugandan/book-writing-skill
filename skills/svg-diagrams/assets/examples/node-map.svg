@@ -24,7 +24,7 @@
 
   <!-- Capabilities are squared off and carry a heavier stroke as well as a
        lighter fill. Shape and weight do the work that colour cannot:
-       --pale against --paper is 1.13:1 in greyscale. -->
+       pale against paper is 1.13:1 in greyscale. -->
   <rect x="273" y="9" width="136.4" height="28" fill="var(--pale, #f1f1f1)"
         stroke="var(--ink, #242424)" stroke-width="2"/>
   <text x="341" y="27" text-anchor="middle" font-size="8.5"

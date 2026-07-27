@@ -99,3 +99,17 @@ jobs:
 
       - name: Shipped diagram examples all pass
         run: python -m bookkit.diagrams ../../svg-diagrams/assets/examples
+
+      - name: Rendered pass rejects a diagram that draws nothing
+        run: |
+          cat > "$RUNNER_TEMP/blank.svg" <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" width="288pt" height="72pt" viewBox="0 0 288 72">
+            <rect x="10" y="10" width="100" height="40" fill="none" stroke="none"/>
+            <g opacity="0"><rect x="10" y="10" width="100" height="40" fill="var(--ink, #242424)"/></g>
+          </svg>
+          SVG
+          if python -m bookkit.diagrams "$RUNNER_TEMP/blank.svg"; then
+            echo "::error::rendered pass accepted a diagram that draws nothing"
+            exit 1
+          fi
+          echo "rendered pass correctly rejected the blank diagram"

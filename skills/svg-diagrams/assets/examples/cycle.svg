@@ -22,7 +22,7 @@
         fill="var(--ink, #242424)">Build</text>
 
   <!-- Verify is the gate, so it carries a heavier stroke as well as the
-       lighter fill. --pale against --paper is only 1.13:1 in greyscale. -->
+       lighter fill. pale against paper is only 1.13:1 in greyscale. -->
   <rect x="84.5" y="116.5" width="118" height="32" rx="2" fill="var(--pale, #f1f1f1)"
         stroke="var(--ink, #242424)" stroke-width="2"/>
   <text x="143.5" y="137" text-anchor="middle" font-size="8.5"

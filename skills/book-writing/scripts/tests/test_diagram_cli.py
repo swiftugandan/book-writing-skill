@@ -67,3 +67,39 @@ def test_cli_accepts_a_directory(tmp_path: Path):
     _page(book, BAD, "chapter-02.html")
 
     assert main([str(book)]) == 1
+
+
+# --- running the module for real ----------------------------------------------
+# Importing a module never fires its `if __name__ == "__main__"` guard, so a
+# guard that drifts above a definition it needs passes every import-based test
+# and breaks the moment anyone runs the documented command.
+
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+
+ASSETS = Path(__file__).resolve().parents[3] / "svg-diagrams" / "assets"
+
+
+def _run(*args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, "-m", "bookkit.diagrams", *args],
+        cwd=Path(__file__).resolve().parents[1],
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_module_runs_as_a_command_and_passes_the_shipped_examples():
+    result = _run(str(ASSETS / "examples"))
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "OK" in result.stdout
+
+
+def test_module_runs_as_a_command_and_fails_a_broken_diagram(tmp_path: Path):
+    path = _page(tmp_path, BAD)
+
+    result = _run(str(path))
+
+    assert result.returncode == 1
+    assert "hardcoded" in result.stdout
