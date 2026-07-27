@@ -82,3 +82,20 @@ jobs:
             exit 1
           fi
           echo "verify correctly rejected the clipped page"
+
+      - name: Diagram checker rejects a colour-only encoding
+        run: |
+          cat > "$RUNNER_TEMP/bad.svg" <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" width="288pt" height="72pt" viewBox="0 0 288 72">
+            <rect x="10" y="10" width="60" height="40" fill="var(--accent, #d54b20)"/>
+            <rect x="90" y="10" width="60" height="40" fill="var(--support, #177c83)"/>
+          </svg>
+          SVG
+          if python -m bookkit.diagrams "$RUNNER_TEMP/bad.svg"; then
+            echo "::error::diagram checker passed a colour-only encoding"
+            exit 1
+          fi
+          echo "diagram checker correctly rejected the colour-only encoding"
+
+      - name: Shipped diagram examples all pass
+        run: python -m bookkit.diagrams ../../svg-diagrams/assets/examples

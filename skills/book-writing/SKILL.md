@@ -75,6 +75,10 @@ Then one chapter at a time, from `STRUCTURE.md` into a copy of
 Pages are laid out by hand as `.page` divs. A chapter may add its own diagram CSS in an
 inline `<style>`, prefixed `ch-`, never shadowing a core selector.
 
+When a chapter needs a diagram, invoke the **`svg-diagrams`** skill. Diagrams are inline SVG
+driven by the same tokens as the interior, so they need no `ch-` class at all, and
+`bookkit.verify` already checks them.
+
 ## ⑤ Editorial gate
 
 Part Two of `references/editorial-standards.md`. Three steps, per chapter:

@@ -11,7 +11,26 @@
       "source": "./",
       "description": "Turn a drafts/ folder into a produced book: a structural blueprint, hand-paginated chapters, and a verified PDF. Carries structure and interior design; content and voice come from your drafts.",
       "category": "productivity",
-      "keywords": ["writing", "book", "typesetting", "pdf", "publishing"]
+      "keywords": [
+        "writing",
+        "book",
+        "typesetting",
+        "pdf",
+        "publishing"
+      ]
+    },
+    {
+      "name": "svg-diagrams",
+      "source": "./",
+      "description": "Author SVG diagrams that survive print: token-driven, legible in greyscale, and checked mechanically against a type floor, contrast thresholds, and the page geometry.",
+      "category": "productivity",
+      "keywords": [
+        "svg",
+        "diagrams",
+        "typesetting",
+        "accessibility",
+        "publishing"
+      ]
     }
   ]
 }

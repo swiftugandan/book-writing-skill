@@ -78,6 +78,13 @@ between them and the whole stylesheet duplicated into all 33 files.
 - **Never carry meaning in colour alone.** Callout variants differ by border
   treatment and label glyph as well as hue, so they survive a monochrome print
   and a colour-blind reader.
+
+The **`svg-diagrams`** skill enforces this mechanically rather than leaving it a rule
+nobody can check by eye. It also documents what the palette actually allows: in greyscale
+the tokens resolve to three tonal levels, since `--accent` against `--support` is 1.14:1
+and `--caution` against `--muted` is 1.02:1. A diagram can encode at most three categories
+by fill alone.
+
 - No slide-deck pages, full-page dark panels, card walls, gradients, or shadows.
 - Continuous editorial rhythm: generous margins, quiet running heads, folios,
   captions. The interior should recede.

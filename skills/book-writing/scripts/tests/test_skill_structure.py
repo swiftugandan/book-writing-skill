@@ -132,3 +132,18 @@ def test_blueprint_phase_loads_the_editorial_standards():
 
     assert "references/editorial-standards.md" in blueprint
     assert "avoid-ai-writing" in blueprint
+
+
+def test_drafting_phase_delegates_diagrams_to_the_svg_skill():
+    """Diagrams are a distinct capability, delegated the way the gate is."""
+    text = SKILL_MD.read_text(encoding="utf-8")
+
+    drafting = _phase_section(text, "## ④ Chapter")
+
+    assert "svg-diagrams" in drafting
+
+
+def test_interior_design_points_at_the_diagram_skill():
+    reference = SKILL / "references" / "interior-design.md"
+
+    assert "svg-diagrams" in reference.read_text(encoding="utf-8")

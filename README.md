@@ -19,6 +19,7 @@ As a plugin:
 ```
 /plugin marketplace add swiftugandan/book-writing-skill
 /plugin install book-writing
+/plugin install svg-diagrams
 ```
 
 Or copy the skill directly:
@@ -155,6 +156,31 @@ Page counts drifting from the budget in `STRUCTURE.md` is a warning rather than 
 A chapter running long is usually a chapter answering two questions, which is a problem to
 fix in the blueprint.
 
+## Diagrams
+
+The companion `svg-diagrams` skill covers diagrams. They are inline SVG driven by the same
+tokens as the interior, so they retarget with the book, and `bookkit.verify` checks them
+alongside everything else.
+
+The check that earns its keep is greyscale. `interior-design.md` always said diagrams must
+never carry meaning in colour alone, and nothing enforced it. Measuring the palette shows
+why that mattered: `--accent` and `--support` sit at 1.14:1 in greyscale, `--caution` and
+`--muted` at 1.02:1, and even `--paper` against `--pale` at 1.13:1. Obviously different on a
+monitor, the same grey on paper.
+
+So the palette offers three tonal levels, not seven colours, and a diagram can encode at
+most three categories by fill. A fourth needs a dash pattern, a stroke weight, a shape
+change, or a label. A low-contrast pair passes the checker when it carries one of those,
+which is the same move `interior.css` already makes for callouts.
+
+The checker also rejects text below a 6pt print floor, measured at rendered scale rather
+than in user units, since a viewBox that scales its contents will happily print a 10-unit
+label at 5pt.
+
+```bash
+.venv/bin/python -m bookkit.diagrams /path/to/book-or-file
+```
+
 ## Retargeting the design
 
 The interior ships as a technical-publisher trim: 7 × 10 inches, serif body, one restrained
@@ -180,7 +206,7 @@ rule cannot read custom properties:
 cd skills/book-writing/scripts && .venv/bin/pytest
 ```
 
-131 tests. CI additionally builds a real book from the shipped templates and runs the four
+245 tests. CI additionally builds a real book from the shipped templates and runs the four
 documented commands, then confirms `verify` rejects a deliberately clipped page. That
 end-to-end check exists because it caught a bug the unit suite could not: the fixtures
 construct valid layouts by hand, so a template linking the wrong stylesheet path passed
