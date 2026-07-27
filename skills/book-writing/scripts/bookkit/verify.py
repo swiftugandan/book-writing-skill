@@ -10,11 +10,11 @@ from __future__ import annotations
 
 import argparse
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
 
 from bookkit.cssguard import check_css_layering
+from bookkit.findings import Finding, has_errors
 from bookkit.manifest import Manifest, folio_discontinuities
 from bookkit.measure import measure_files, px_to_pt
 from bookkit.paginate import MANIFEST_NAME, page_counts
@@ -22,18 +22,7 @@ from bookkit.paginate import MANIFEST_NAME, page_counts
 GEOMETRY_TOLERANCE_PT = 0.5
 OVERFLOW_TOLERANCE_PX = 1.0
 
-
-@dataclass(frozen=True)
-class Finding:
-    """One verification result. `level` is "error" or "warning"."""
-
-    level: str
-    file: str
-    message: str
-
-
-def has_errors(findings: Sequence[Finding]) -> bool:
-    return any(finding.level == "error" for finding in findings)
+__all__ = ["Finding", "has_errors", "verify", "main"]
 
 
 def verify(
