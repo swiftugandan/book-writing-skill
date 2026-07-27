@@ -102,3 +102,35 @@ def test_has_errors_ignores_warnings():
 
     assert not has_errors([warning])
     assert has_errors([warning, Finding(level="error", file="a.html", message="x")])
+
+
+def test_verify_rejects_a_page_whose_diagram_breaks_the_rules(book_dir: Path):
+    """The book pipeline covers diagrams with no extra command."""
+    bad_svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="288pt" height="72pt" '
+        'viewBox="0 0 288 72">'
+        '<rect x="10" y="10" width="100" height="40" fill="#ff0000"/>'
+        "</svg>"
+    )
+    write_book(book_dir, "a.html", [f"<p>a</p>{bad_svg}"])
+    manifest = assign_folios([("a.html", 1)])
+
+    findings = verify(book_dir, manifest, _css(book_dir))
+
+    assert has_errors(findings)
+    assert any("hardcoded" in f.message for f in findings)
+
+
+def test_verify_accepts_a_page_with_a_clean_diagram(book_dir: Path):
+    good_svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="288pt" height="72pt" '
+        'viewBox="0 0 288 72">'
+        '<rect x="10" y="10" width="100" height="40" fill="var(--paper, #ffffff)" '
+        'stroke="var(--ink, #242424)"/>'
+        '<text x="16" y="34" font-size="9" fill="var(--ink, #242424)">Step</text>'
+        "</svg>"
+    )
+    write_book(book_dir, "a.html", [f"<p>a</p>{good_svg}"])
+    manifest = assign_folios([("a.html", 1)])
+
+    assert verify(book_dir, manifest, _css(book_dir)) == []

@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Sequence
 
 from bookkit.cssguard import check_css_layering
+from bookkit.diagrams import check_diagrams
 from bookkit.findings import Finding, has_errors
 from bookkit.manifest import Manifest, folio_discontinuities
 from bookkit.measure import measure_files, px_to_pt
@@ -116,6 +117,8 @@ def verify(
                     ),
                 )
             )
+
+    findings.extend(check_diagrams(paths))
 
     return findings
 
